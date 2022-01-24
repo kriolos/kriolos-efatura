@@ -1,0 +1,3 @@
+= Kriolos :: eFatura :: Core
+
+Provide Java API for eFatura, use of kriolos-efatura-datamodel
