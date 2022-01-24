@@ -1,3 +1,53 @@
-= Kriolos :: eFatura
+// Global settings
+:ascii-ids:
+:encoding: UTF-8
+:lang: pt_PT
+:icons: font
+:toc:
+:toc-placement!:
+:toclevels: 3
+:numbered:
+:stem:
 
+ifdef::env-github[]
+:imagesdir: https://raw.githubusercontent.com/kriolos/kriolos-efatura/master/docs/images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+:badges:
+:doc-dir: https://github.com/kriolos/kriolos-efatura/master/docs
+endif::[]
+
+[[doc]]
+= Kriolos :: eFatura
+:author: Copyright (c) 2022-2022 Paulo Borges.
+:revnumber: kriolos-efatura-0.0.1-snapshot
+:revdate: {last-update-label} {docdatetime}
+:version-label!:
+
+ifdef::badges[]
+image:https://github.com/kriolos/kriolos-efatura/actions/workflows/build.yml/badge.svg["Build Status", link="https://github.com/kriolos/kriolos-efatura/actions/workflows/build.yml"]
+image:https://shields.io/badge/license-Apache%202-blue["License", link="https://www.apache.org/licenses/LICENSE-2.0"]
+endif::[]
+
+== About
+
+----
 Cabo Verde e-fatura 
+Cabo Verde Elecronic Invoice
+----
+
+== Build
+
+.Build eFatura and SAFT-CV
+[source, bash]
+----
+mvn -Pefcv,saftcv clean install
+----
+
+== Reference
+
+* link:{doc-dir}/[Proj Docs]
+* https://efatura.cv/
