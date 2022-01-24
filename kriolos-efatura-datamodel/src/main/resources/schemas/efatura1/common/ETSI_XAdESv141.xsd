@@ -20,6 +20,7 @@
 		<xsd:attribute name="Id" type="xsd:ID" use="optional"/>
 		<xsd:attribute name="URI" type="xsd:anyURI" use="optional"/>
 	</xsd:complexType>
-	
-	<xsd:element name="ArchiveTimeStamp" type="xades:XAdESTimeStampType"/>
+	<!-- KRIOLOS.CHANGE DUPLICADO ALREAD DEFINED on v1.3.2
+	<xsd:element name="ArchiveTimeStamp" type="xades:XAdESTimeStampType
+        -->
 </xsd:schema>
