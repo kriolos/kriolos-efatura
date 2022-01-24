@@ -1,3 +1,62 @@
 = Kriolos :: eFatura :: Datamodel
 
 Provide Java gen classes from schemas (XSD files)
+
+== Know Issues
+
+
+* ISSUE-01 DUPLICATION of element 'ArchiveTimeStamp'
+
+.XAdES.xsd
+----
+<xsd:element name="ArchiveTimeStamp" type="XAdESTimeStampType"/>
+----
+
+.XAdESv141.xsd
+----
+<xsd:element name="ArchiveTimeStamp" type="xades:XAdESTimeStampType
+----
+
+== Schemas Version
+
+Base schemas DIR {.}/src/resources/schemas
+
+=== saft Cabo  (saftcv)
+
+.saftcv (Version: 1.01_01)
+|====
+|File |Version |Namespace
+
+|saftcv1.01_01.xsd
+|1.01_01
+|urn:OECD:StandardAuditFile-Tax:CV_1.01_01
+
+|====
+
+=== e-Fatura Cabo Verde
+
+.efatura (Version: MISC)
+|====
+|File |Version |Namespace
+
+|saftcv1.01_01.xsd
+|1.01_01
+|urn:OECD:StandardAuditFile-Tax:CV_1.01_01
+
+|====
+
+
+== Code Gen
+
+..
+
+== SPECS Used
+
+* XAdES Digital Signatures XML schema files
+** https://uri.etsi.org/01903/v1.3.2/
+** http://uri.etsi.org/01903/v1.4.1
+
+== Reference
+
+* https://cxf.apache.org/cxf-xjc-plugin.html
+* https://github.com/apache/cxf-xjc-utils
