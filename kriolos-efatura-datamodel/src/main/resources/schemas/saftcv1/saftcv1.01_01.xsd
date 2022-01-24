@@ -1,0 +1,1399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ns="urn:OECD:StandardAuditFile-Tax:CV_1.01_01"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
+    xmlns:doc="urn:schemas-basda-org:schema-extensions:documentation"
+    xmlns="urn:OECD:StandardAuditFile-Tax:CV_1.01_01" attributeFormDefault="unqualified"
+    elementFormDefault="qualified" id="SAF-T_CV"
+    targetNamespace="urn:OECD:StandardAuditFile-Tax:CV_1.01_01" version="1.01_01"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2009/XMLSchema/XMLSchema">
+    <xs:annotation>
+        <xs:documentation>
+            <doc:Title>Standard Audit File - Cape Verde version</doc:Title>
+            <doc:Subject>Standard Audit File - Cape Verde version</doc:Subject>
+            <doc:Version>
+                <doc:Number>1.01_01</doc:Number>
+            </doc:Version>
+            <doc:Author>Direção Nacional das Receitas de Estado</doc:Author>
+            <doc:ModificationDate>2020-05-29</doc:ModificationDate>
+        </xs:documentation>
+    </xs:annotation>
+    <xs:element name="AuditFile">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Header" minOccurs="1"/>
+                <xs:element name="MasterFiles">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="GeneralLedgerAccounts" minOccurs="0"/>
+                            <xs:element ref="Customer" minOccurs="0" maxOccurs="unbounded"/>
+                            <xs:element ref="Supplier" minOccurs="0" maxOccurs="unbounded"/>
+                            <xs:element ref="Product" minOccurs="0" maxOccurs="unbounded"/>
+                            <xs:element ref="TaxTable" minOccurs="0"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="GeneralLedgerEntries" minOccurs="0"/>
+                <xs:element ref="SourceDocuments" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Estrutura de cabecalho (AuditFile.Header) -->
+    <xs:element name="Header">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="AuditFileVersion">
+                    <xs:simpleType>
+                        <xs:restriction base="SAFcodeType">
+                            <xs:pattern value="1.01_01"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="CompanyID">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:pattern value="([0-9]{9})+|([^^]+ [0-9/]+)"/>
+                            <xs:minLength value="1"/>
+                            <xs:maxLength value="50"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="TaxRegistrationNumber" type="SAFTCVVatNumber">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="pt">Número de contribuinte do sujeito passivo a qual diz respeito o ficheiro SAF-T</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="FileContentType">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="pt">Deve ser preenchido com o tipo de dados que o ficheiro SAF-T (CV) contém:
+“C” – Contabilidade
+ “I” – Inventários
+“F” – Ficheiro completo, com todas as estruturas contempladas na presente estrutura
+“O” - Outros
+</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:documentation xml:lang="pt">Tipo de Ficheiro, deverá ter um dos seguintes tipos:
+                                F para todas as estruturas, 
+                                C para Contabilidade,
+                                I para Inventário,
+                                O para outros tipos de ficheiro (documentos de conferência e para recibos) 
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:restriction base="SAFcodeType">
+                            <xs:enumeration value="F"/>
+                            <xs:enumeration value="C"/>
+                            <xs:enumeration value="I"/>
+                            <xs:enumeration value="O"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="CompanyName" type="SAFTCV150textType">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="pt">Denominação social do sujeito passivo</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="BusinessName" type="SAFmiddle2textType" minOccurs="0"/>
+                <xs:element name="CompanyAddress" type="AddressStructureCV"/>
+                <xs:element name="FiscalYear">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:integer">
+                            <xs:minInclusive value="2000"/>
+                            <xs:maxInclusive value="9999"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="StartDate" type="SAFdateType"/>
+                <xs:element name="EndDate" type="SAFdateType"/>
+                <xs:element name="CurrencyCode" fixed="CVE"/>
+                <xs:element name="DateCreated" type="SAFdateType"/>
+                <xs:element name="TaxEntity" type="SAFTCV20textType"/>
+                <xs:element name="ProductCompanyTaxID" type="SAFmiddle1textType"/>
+                <xs:element name="SoftwareCertificateNumber" type="xs:nonNegativeInteger"/>
+                <xs:element name="ProductID" type="SAFTCVProductID"/>
+                <xs:element name="ProductVersion" type="SAFmiddle1textType"/>
+                <xs:element name="HeaderComment" type="SAFlongtextType" minOccurs="0"/>
+                <xs:element name="Telephone" type="SAFshorttextType" minOccurs="0"/>
+                <xs:element name="Fax" type="SAFshorttextType" minOccurs="0"/>
+                <xs:element name="Email" type="SAFTCVEmailType" minOccurs="0"/>
+                <xs:element name="Website" type="xs:anyURI" minOccurs="0"/>
+                <xs:element name="NumberOfParts" type="xs:nonNegativeInteger">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="pt">Número de partes totais do ficheiro.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="PartNumber" type="xs:nonNegativeInteger">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="pt">Número da parte do ficheiro (ex: 1, 2, 3), quando o SAF-T é dividido em partes. 
+                            O conteúdo dos campos Entity, FileContentType, FiscalYear, StartDate e EndDate tem que ser o mesmo em todas as partes dos ficheiros.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Ficheiros Mestre (AuditFile.MasterFiles) -->
+    <!--    Estrutura do Plano de Contas (AuditFile.MasterFiles.GeneralLedgerAccounts)-->
+    <xs:element name="GeneralLedgerAccounts">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="TaxonomyReference" type="SAFTCVTaxonomyReference"/>
+                <xs:element name="Account" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="AccountID" type="SAFTCVGLAccountID"/>
+                            <xs:element name="AccountDescription" type="SAFlongtextType"/>
+                            <xs:element name="OpeningDebitBalance" type="SAFmonetaryType"/>
+                            <xs:element name="OpeningCreditBalance" type="SAFmonetaryType"/>
+                            <xs:element name="ClosingDebitBalance" type="SAFmonetaryType"/>
+                            <xs:element name="ClosingCreditBalance" type="SAFmonetaryType"/>
+                            <xs:element name="GroupingCategory">
+                                <xs:annotation>
+                                    <xs:documentation>GR para conta de 1. grau da contabilidade geral, GA para conta
+                                        agregadora ou integradora da contabilidade geral, GM para conta de movimento da
+                                        contabilidade geral, AR para conta de 1. grau da contabilidade analitica, AA para
+                                        conta agregadora ou integradora da contabilidade analitica, AM para conta de
+                                        movimento da contabilidade analitica </xs:documentation>
+                                </xs:annotation>
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="GR"/>
+                                        <xs:enumeration value="GA"/>
+                                        <xs:enumeration value="GM"/>
+                                        <xs:enumeration value="AR"/>
+                                        <xs:enumeration value="AA"/>
+                                        <xs:enumeration value="AM"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="GroupingCode" type="SAFTCVGLAccountID" minOccurs="0"/>
+                            <xs:element name="TaxonomyCode" type="SAFTCVTaxonomyCode" minOccurs="0"
+                            />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <!--    Estrutura de Cliente (AuditFile.MasterFiles.Customer) -->
+    <xs:element name="Customer">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="CustomerID" type="SAFmiddle1textType"/>
+                <xs:element name="AccountID" type="SAFTCVAccountID"/>
+                <xs:element name="CustomerTaxID" type="SAFmiddle1textType"/>
+                <xs:element name="CompanyName" type="SAFTCV150textType"/>
+                <xs:element name="Contact" type="SAFmiddle2textType" minOccurs="0"/>
+                <xs:element name="BillingAddress" type="AddressStructure"/>
+                <xs:element name="ShipToAddress" type="AddressStructureRegion" minOccurs="0"
+                    maxOccurs="unbounded"/>
+                <xs:element name="Telephone" type="SAFshorttextType" minOccurs="0"/>
+                <xs:element name="Fax" type="SAFshorttextType" minOccurs="0"/>
+                <xs:element name="Email" type="SAFTCVEmailType" minOccurs="0"/>
+                <xs:element name="Website" type="xs:anyURI" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <!--    Estrutura de Fornecedor (AuditFile.MasterFiles.Supplier) -->
+    <xs:element name="Supplier">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="SupplierID" type="SAFmiddle1textType"/>
+                <xs:element name="AccountID" type="SAFTCVAccountID"/>
+                <xs:element name="SupplierTaxID" type="SAFmiddle1textType"/>
+                <xs:element name="CompanyName" type="SAFTCV150textType"/>
+                <xs:element name="Contact" type="SAFmiddle2textType" minOccurs="0"/>
+                <xs:element name="BillingAddress" type="AddressStructureRegion"/>
+                <xs:element name="ShipFromAddress" type="AddressStructureRegion" minOccurs="0"
+                    maxOccurs="unbounded"/>
+                <xs:element name="Telephone" type="SAFshorttextType" minOccurs="0"/>
+                <xs:element name="Fax" type="SAFshorttextType" minOccurs="0"/>
+                <xs:element name="Email" type="SAFTCVEmailType" minOccurs="0"/>
+                <xs:element name="Website" type="xs:anyURI" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <!--    Estrutura de produto (AuditFile.MasterFiles.Product)-->
+    <xs:element name="Product">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ProductType" type="SAFTCVProductType">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="pt">Restricao: P para Produtos, S para Servicos, O para Outros (Ex: portes
+                debitados, adiantamentos recebidos ou alienacao de ativos), E para Impostos
+                Especiais de Consumo (ex.:IABA, ISP, IT); I para impostos, taxas e encargos
+                parafiscais exceto IVA e IS que deverao ser refletidos na tabela 2.5 Tabela de
+                impostos (TaxTable)e Impostos Especiais de Consumo </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="ProductCode" type="SAFmiddle2textType"/>
+                <xs:element name="ProductGroup" type="SAFmiddle2textType" minOccurs="0"/>
+                <xs:element name="ProductDescription" type="SAFTCVProductDescription"/>
+                <xs:element name="ProductNumberCode" type="SAFmiddle2textType"/>
+                <xs:element name="CVProductCode" type="SAFmiddle2textType" minOccurs="0"/>
+                <xs:element name="CustomsDetails" type="CustomsDetailsStructure" minOccurs="0"/>
+                <xs:element name="UOMBase" type="SAFcodeType">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="pt">Unidade de medida base para a gestão de stock deste produto. 
+Ex. Kg, Met, Lt, etc </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:sequence minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="pt">Informação acerca da unidade de medida standard</xs:documentation>
+                    </xs:annotation>
+                    <xs:element name="UOMStandard" type="SAFcodeType">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="pt">Unidade de medida standard aplicada ao produto (ex. Kg, Mt, Lt, ...)</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="UOMToUOMBaseConversionFactor"
+                        type="SAFTCVconversionfactorType">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="pt">Fator de conversão da unidade de medida standard para a unidade de medida base.
+ Ex. se a unidade de medida standard é Kg( kilo) e a unidade de medida base é g (grama), o fator de conversão é de 1000.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="Tax">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="pt">Informação de Impostos</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence minOccurs="0">
+                            <xs:element name="TaxType" type="SAFTCVTaxType">
+                                <xs:annotation>
+                                    <xs:documentation xml:lang="pt">Tipo de imposto usado no sistema do sujeito passivo. Deverá estar existir na tabela de impostos (estrutura TaxTable).</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="TaxCode" type="SAFTCVTaxCode">
+                                <xs:annotation>
+                                    <xs:documentation xml:lang="pt">Código de imposto usado no sistema do sujeito passivo.Deverá estar existir na tabela de impostos (estrutura TaxTable).</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <!--    Estrutura de Impostos (AuditFile.MasterFiles.TaxTable) -->
+    <xs:element name="TaxTable">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="TaxTableEntry" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <!--    Estrutura de Imposto -->
+    <xs:element name="TaxTableEntry">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="TaxType" type="SAFTCVTaxType"> </xs:element>
+                <xs:element name="TaxCountryRegion" type="ISOCountryCode"/>
+                <xs:element name="TaxCode" type="SAFTCVTaxCode"/>
+                <xs:element name="Description" type="SAFlongtextType"/>
+                <xs:element name="TaxExpirationDate" type="SAFdateType" minOccurs="0"/>
+                <xs:choice>
+                    <xs:element name="TaxPercentage" type="SAFTdecimalType"/>
+                    <xs:element name="TaxAmount" type="SAFmonetaryType"/>
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <!-- Estrutura de Movimentos Contabilisticos (AuditFile.GeneralLedgerEntries)-->
+    <xs:element name="GeneralLedgerEntries">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="NumberOfEntries" type="xs:nonNegativeInteger"/>
+                <xs:element name="TotalDebit" type="SAFmonetaryType"/>
+                <xs:element name="TotalCredit" type="SAFmonetaryType"/>
+                <xs:element name="Journal" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="JournalID" type="SAFTCVJournalID"/>
+                            <xs:element name="Description" type="SAFlongtextType"/>
+                            <xs:element name="Transaction" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="TransactionID" type="SAFTCVTransactionID"/>
+                                        <xs:element name="Period" type="SAFTCVAccountingPeriod"/>
+                                        <xs:element name="TransactionDate" type="SAFdateType"/>
+                                        <xs:element name="SourceID" type="SAFmiddle1textType"/>
+                                        <xs:element name="Description" type="SAFlongtextType"/>
+                                        <xs:element name="DocArchivalNumber"
+                                            type="SAFTCVDocArchivalNumber"/>
+                                        <xs:element name="TransactionType"
+                                            type="SAFTCVTransactionType"/>
+                                        <xs:element name="GLPostingDate" type="SAFdateType"/>
+                                        <xs:choice minOccurs="0">
+                                            <xs:element name="CustomerID" type="SAFmiddle1textType"
+                                                minOccurs="0"/>
+                                            <xs:element name="SupplierID" type="SAFmiddle1textType"
+                                                minOccurs="0"/>
+                                        </xs:choice>
+                                        <xs:element name="Lines">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="DebitLine" minOccurs="1"
+                                                  maxOccurs="unbounded">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element name="RecordID"
+                                                  type="SAFmiddle1textType"/>
+                                                  <xs:element name="AccountID"
+                                                  type="SAFTCVGLAccountID"/>
+                                                  <xs:element name="SourceDocumentID"
+                                                  type="SAFmiddle1textType" minOccurs="0"/>
+                                                  <xs:element name="SystemEntryDate"
+                                                  type="SAFdateTimeType"/>
+                                                  <xs:element name="Description"
+                                                  type="SAFlongtextType"/>
+                                                  <xs:element name="DebitAmount"
+                                                  type="SAFmonetaryType"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="CreditLine" minOccurs="1"
+                                                  maxOccurs="unbounded">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element name="RecordID"
+                                                  type="SAFmiddle1textType"/>
+                                                  <xs:element name="AccountID"
+                                                  type="SAFTCVGLAccountID"/>
+                                                  <xs:element name="SourceDocumentID"
+                                                  type="SAFmiddle1textType" minOccurs="0"/>
+                                                  <xs:element name="SystemEntryDate"
+                                                  type="SAFdateTimeType"/>
+                                                  <xs:element name="Description"
+                                                  type="SAFlongtextType"/>
+                                                  <xs:element name="CreditAmount"
+                                                  type="SAFmonetaryType"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <!-- Estrutura de Documentos Comerciais (AuditFile.SourceDocuments)-->
+    <xs:element name="SourceDocuments">
+        <xs:complexType>
+            <xs:sequence>
+
+                <xs:element name="WorkingDocuments" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="NumberOfEntries" type="xs:nonNegativeInteger"/>
+                            <xs:element name="TotalDebit" type="SAFmonetaryType"/>
+                            <xs:element name="TotalCredit" type="SAFmonetaryType"/>
+                            <xs:element name="WorkDocument" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="DocumentNumber"
+                                            type="SAFTCVDocumentNumberType"/>
+                                        <xs:element name="DocumentStatus">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="WorkStatus"
+                                                  type="SAFTCVWorkStatus"/>
+                                                  <xs:element name="WorkStatusDate"
+                                                  type="SAFdateTimeType"/>
+                                                  <xs:element name="Reason"
+                                                  type="SAFmiddle1textType" minOccurs="0"/>
+                                                  <xs:element name="SourceID"
+                                                  type="SAFmiddle1textType"/>
+                                                  <xs:element name="SourceBilling"
+                                                  type="SAFTCVSourceBilling">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Opções: 
+                                                            P para documento produzido na aplicação,
+                                                            I para documento integrado e produzido noutra aplicacao, 
+                                                            M para documento proveniente de recuperacao ou de emissao manual 
+                                                    </xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="Period" type="SAFTCVPeriod" minOccurs="0"/>
+                                        <xs:element name="WorkDate" type="SAFdateType"/>
+                                        <xs:element name="WorkType" type="SAFTCVWorkType"/>
+                                        <xs:element name="SourceID" type="SAFmiddle1textType"/>
+                                        <xs:element name="EACCode" type="SAFTCVEACCode"
+                                            minOccurs="0"/>
+                                        <xs:element name="SystemEntryDate" type="SAFdateTimeType"/>
+                                        <xs:element name="CustomerID" type="SAFmiddle1textType"/>
+                                        <xs:element name="Line" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="LineNumber"
+                                                  type="xs:nonNegativeInteger"/>
+                                                  <xs:element name="OrderReferences"
+                                                  type="OrderReferencesStructure" minOccurs="0"
+                                                  maxOccurs="unbounded"/>
+                                                  <xs:element name="ProductCode"
+                                                  type="SAFmiddle2textType"/>
+                                                  <xs:element name="ProductDescription"
+                                                  type="SAFTCVProductDescription"/>
+                                                  <xs:element name="Quantity" type="SAFquantityType"/>
+                                                  <xs:element name="UnitOfMeasure"
+                                                  type="SAFcodeType"/>
+                                                  <xs:element name="UnitPrice"
+                                                  type="SAFmonetaryType"/>
+                                                  <xs:element name="TaxBase" type="SAFmonetaryType"
+                                                  minOccurs="0"/>
+                                                  <xs:element name="TaxPointDate" type="SAFdateType"/>
+                                                  <xs:element name="References"
+                                                  type="ReferencesStructure" minOccurs="0"
+                                                  maxOccurs="unbounded"/>
+                                                  <xs:element name="Description"
+                                                  type="SAFlongtextType"/>
+                                                  <xs:element name="ProductSerialNumber"
+                                                  type="ProductSerialNumberStructure" minOccurs="0"/>
+                                                  <xs:choice>
+                                                  <xs:element name="DebitAmount"
+                                                  type="SAFmonetaryType"/>
+                                                  <xs:element name="CreditAmount"
+                                                  type="SAFmonetaryType"/>
+                                                  </xs:choice>
+                                                  <xs:element name="Tax" type="TaxStructure"
+                                                  minOccurs="0"/>
+                                                  <xs:element name="TaxExemptionReason"
+                                                  type="SAFmiddle2textType" minOccurs="0"/>
+                                                  <xs:element name="TaxExemptionCode"
+                                                  type="SAFTCV3TextType" minOccurs="0"/>
+                                                  <xs:element name="SettlementAmount"
+                                                  type="SAFmonetaryType" minOccurs="0"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="DocumentTotals">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="TaxPayable"
+                                                  type="SAFmonetaryType"/>
+                                                  <xs:element name="NetTotal" type="SAFmonetaryType"/>
+                                                  <xs:element name="GrossTotal"
+                                                  type="SAFmonetaryType"/>
+                                                  <xs:element name="Currency"
+                                                  type="CurrencyStructure" minOccurs="0"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Payments" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="NumberOfEntries" type="xs:nonNegativeInteger"/>
+                            <xs:element name="TotalDebit" type="SAFmonetaryType"/>
+                            <xs:element name="TotalCredit" type="SAFmonetaryType"/>
+                            <xs:element name="Payment" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="PaymentRefNo"
+                                            type="SAFTCVDocumentNumberType"/>
+                                        <xs:element name="Period" type="SAFTCVPeriod" minOccurs="0"/>
+                                        <xs:element name="TransactionID" type="SAFTCVTransactionID"
+                                            minOccurs="0"/>
+                                        <xs:element name="TransactionDate" type="SAFdateType"/>
+                                        <xs:element name="PaymentType" type="SAFTCVPaymentType"/>
+                                        <xs:element name="Description" minOccurs="0"
+                                            type="SAFlongtextType"/>
+                                        <xs:element name="SystemID" type="SAFmiddle1textType"
+                                            minOccurs="0"/>
+                                        <xs:element name="DocumentStatus">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="PaymentStatus"
+                                                  type="SAFTCVPaymentStatus"/>
+                                                  <xs:element name="PaymentStatusDate"
+                                                  type="SAFdateTimeType"/>
+                                                  <xs:element name="Reason"
+                                                  type="SAFmiddle1textType" minOccurs="0"/>
+                                                  <xs:element name="SourceID"
+                                                  type="SAFmiddle1textType"/>
+                                                  <xs:element name="SourcePayment"
+                                                  type="SAFTCVSourcePayment"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="PaymentMethod"
+                                            type="PaymentMethodStructure" minOccurs="0"
+                                            maxOccurs="unbounded"/>
+                                        <xs:element name="SourceID" type="SAFmiddle1textType"/>
+                                        <xs:element name="SystemEntryDate" type="SAFdateTimeType"/>
+                                        <xs:choice>
+                                            <xs:element name="CustomerID" type="SAFmiddle1textType"/>
+                                            <xs:element name="SupplierID" type="SAFmiddle1textType"
+                                            />
+                                        </xs:choice>
+                                        <xs:element name="Line" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="LineNumber"
+                                                  type="xs:nonNegativeInteger"/>
+                                                  <xs:element name="SourceDocumentID"
+                                                  maxOccurs="unbounded">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element name="OriginatingON"
+                                                  type="SAFmiddle2textType"/>
+                                                  <xs:element name="InvoiceDate" type="SAFdateType"/>
+                                                  <xs:element name="Description"
+                                                  type="SAFlongtextType" minOccurs="0"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="SettlementAmount"
+                                                  type="SAFmonetaryType" minOccurs="0"/>
+                                                  <xs:choice>
+                                                  <xs:element name="DebitAmount"
+                                                  type="SAFmonetaryType"/>
+                                                  <xs:element name="CreditAmount"
+                                                  type="SAFmonetaryType"/>
+                                                  </xs:choice>
+                                                  <xs:element name="Tax" type="PaymentTaxStructure"
+                                                  minOccurs="0"/>
+                                                  <xs:element name="TaxExemptionReason"
+                                                  type="SAFmiddle2textType" minOccurs="0"/>
+                                                  <xs:element name="TaxExemptionCode"
+                                                  type="SAFTCV3TextType" minOccurs="0"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="DocumentTotals">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="TaxPayable"
+                                                  type="SAFmonetaryType"/>
+                                                  <xs:element name="NetTotal" type="SAFmonetaryType"/>
+                                                  <xs:element name="GrossTotal"
+                                                  type="SAFmonetaryType"/>
+                                                  <xs:element name="Settlement" minOccurs="0">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element name="SettlementAmount"
+                                                  type="SAFmonetaryType"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="Currency"
+                                                  type="CurrencyStructure" minOccurs="0"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="WithholdingTax"
+                                            type="WithholdingTaxStructure" minOccurs="0"
+                                            maxOccurs="unbounded"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="PhysicalStock" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element minOccurs="1" maxOccurs="2" name="PhysicalStockDetails">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="PhysicalStockDate" type="SAFdateType"/>
+                                        <xs:element name="PhysicalStockEntries">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="PhysicalStockEntry"
+                                                  maxOccurs="unbounded">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element name="WarehouseID"
+                                                  type="SAFmiddle1textType" minOccurs="1">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Armazém onde estão os armazenados os bens</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  <xs:element name="LocationID"
+                                                  type="SAFshorttextType" minOccurs="0">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Localização dos bens dentro do armazém</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  <xs:element name="ProductCode"
+                                                  type="SAFmiddle2textType">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Código do Artigo</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  <xs:element name="StockAccountNo"
+                                                  type="SAFmiddle2textType" minOccurs="0">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Lote do stock, número de série do artigos.
+                                                        Não é usado quando existe apenas 1 linha de inventário por cada produto. </xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  <xs:element name="ProductType"
+                                                  type="SAFTCVPSProductType" minOccurs="1">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Tipos:
+                                                                                - “M”   – Mercadorias;
+                                                                                - “AB”  - ativos biológicos;
+                                                                                - “MP”  - matérias-primas: subsidiárias e de consumo;
+                                                                                - “PCI” - produtos acabados e intermédios;
+                                                                                - “SP”  - subprodutos, desperdícios e refugos;
+                                                                                - “PC”  - produtos e trabalhos em curso
+                                                   </xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  <xs:element name="ProductStatus"
+                                                  type="SAFTCVProductStatus" minOccurs="1">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Campo para indicar se o status do stock. 
+                                                                                    Indicação de acordo com o seguinte:
+                                                                                    “A” – Ativo
+                                                                                    “D” – Danificado
+                                                                                    “DS” - Descontinuado
+                                                                                    “O” – Obsoleto
+                                                                                    “Q” - Quarentena 
+                                                                                    </xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  <xs:sequence minOccurs="0">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Não é necessário preencher se o unidade do campo UOMPhysicalStock for igual ao campo UOMBase nos dados mestre dos artigos</xs:documentation>
+                                                  </xs:annotation>
+                                                  <xs:element name="UOMPhysicalStock"
+                                                  type="SAFcodeType">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Unidade de medida do inventário (quando é diferente da UOMBase nos dados mestre dos artigos)</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  <xs:element name="UOMToUOMBaseConversionFactor"
+                                                  type="SAFTCVconversionfactorType">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Fator de conversão entre o campo UOMPhysicalStock e o campo UOMBase dos dados mestre dos artigos</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  </xs:sequence>
+                                                  <xs:element name="UnitPrice"
+                                                  type="SAFmonetaryType" minOccurs="1">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Preço unitário da linha de inventário na moeda definida no header do ficheiro</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  <xs:element name="StockQuantity"
+                                                  type="SAFquantityType">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Quantidade de stock na data indicada no campo PhysicalStockDate</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  <xs:element name="StockValue"
+                                                  type="SAFmonetaryType" minOccurs="1">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Valor do stock na data indicada no campo PhysicalStockDate na moeda definida no header do ficheiro</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  <xs:element name="StockCharacteristics"
+                                                  minOccurs="0">
+                                                  <xs:complexType>
+                                                  <xs:sequence maxOccurs="unbounded">
+                                                  <xs:element name="StockCharacteristic"
+                                                  type="SAFshorttextType">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Código de caraterística do artigo (ex. cor, tamanho, dimensões, etc).</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  <xs:element name="StockCharacteristicValue"
+                                                  type="SAFmiddle1textType">
+                                                  <xs:annotation>
+                                                  <xs:documentation xml:lang="pt">Valor da caraterística </xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <!-- ****************************************** -->
+    <!-- ESTRUTURAS DE SUPORTE                      -->
+    <!-- ****************************************** -->
+
+
+    <!-- Estrutura de Moradas -->
+    <xs:complexType name="AddressStructure">
+        <xs:sequence>
+            <xs:element name="BuildingNumber" type="SAFshorttextType" minOccurs="0"/>
+            <xs:element name="StreetName" type="SAFlongtextType" minOccurs="0"/>
+            <xs:element name="AddressDetail" type="SAFlongtextType"/>
+            <xs:element name="City" type="SAFmiddle1textType"/>
+            <xs:element name="PostalCode" type="SAFshorttextType"/>
+            <xs:element name="Region" type="SAFTCV50textType" minOccurs="1"/>
+            <xs:element name="Country" type="ISOCountryCode"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AddressStructureCV">
+        <xs:sequence>
+            <xs:element name="BuildingNumber" type="SAFshorttextType" minOccurs="0"/>
+            <xs:element name="StreetName" type="SAFlongtextType" minOccurs="0"/>
+            <xs:element name="AddressDetail" type="SAFlongtextType"/>
+            <xs:element name="City" type="SAFmiddle1textType"/>
+            <xs:element name="PostalCode" type="SAFTCVPostalCode"/>
+            <xs:element name="Region" type="SAFTCV50textType" minOccurs="1"/>
+            <xs:element name="Country" type="ISOCountryCode" fixed="CV"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AddressStructureRegion">
+        <xs:sequence>
+            <xs:element name="BuildingNumber" type="SAFshorttextType" minOccurs="0"/>
+            <xs:element name="StreetName" type="SAFlongtextType" minOccurs="0"/>
+            <xs:element name="AddressDetail" type="SAFlongtextType"/>
+            <xs:element name="City" type="SAFmiddle1textType"/>
+            <xs:element name="PostalCode" type="SAFshorttextType"/>
+            <xs:element name="Region" type="SAFTCV50textType" minOccurs="0"/>
+            <xs:element name="Country" type="ISOCountryCode"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Estrutura de valor monetario -->
+    <!-- Este elemento apenas deve ser gerado quando a moeda original do documento for diferente de CVE -->
+    <xs:complexType name="CurrencyStructure">
+        <xs:sequence>
+            <xs:element name="CurrencyCode" type="ISOCurrencyCode"/>
+            <xs:element name="CurrencyAmount" type="SAFmonetaryType"/>
+            <xs:element name="ExchangeRate" type="SAFexchangerateType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Estrutura de caraterizacao aduaneira de produtos-->
+    <xs:complexType name="CustomsDetailsStructure">
+        <xs:sequence>
+            <xs:element name="UNNumber" type="SAFTCVUNNumber" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation xml:lang="pt">Código da ONU para produtos perigosos.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Estrutura de Referencias ao documento de origem-->
+    <xs:complexType name="OrderReferencesStructure">
+        <xs:sequence>
+            <xs:element name="OriginatingON" type="SAFmiddle2textType" minOccurs="0"/>
+            <xs:element name="OrderDate" type="SAFdateType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Estrutura de pagamentos-->
+    <xs:complexType name="PaymentMethodStructure">
+        <xs:sequence>
+            <xs:element name="PaymentMechanism" type="SAFTCVPaymentMechanism" minOccurs="0"/>
+            <xs:element name="PaymentAmount" type="SAFmonetaryType"/>
+            <xs:element name="PaymentDate" type="SAFdateType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Estrutura de Taxa dos recibos-->
+    <xs:complexType name="PaymentTaxStructure">
+        <xs:sequence>
+            <xs:element name="TaxType" type="SAFTCVTaxType"/>
+            <xs:element name="TaxCountryRegion" type="ISOCountryCode"/>
+            <xs:element name="TaxCode" type="SAFTCVPaymentTaxCode"/>
+            <xs:choice>
+                <xs:element name="TaxPercentage" type="SAFTdecimalType"/>
+                <xs:element name="TaxAmount" type="SAFmonetaryType"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Estrutura de numero de serie do produto-->
+    <xs:complexType name="ProductSerialNumberStructure">
+        <xs:sequence>
+            <xs:element name="SerialNumber" type="SAFmiddle2textType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Estrutura de referencias a outros documentos em documentos retificativos de faturas-->
+    <xs:complexType name="ReferencesStructure">
+        <xs:sequence>
+            <xs:element name="Reference" type="SAFmiddle2textType" minOccurs="0"/>
+            <xs:element name="Reason" type="SAFmiddle1textType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Estrutura de Taxa -->
+    <xs:complexType name="TaxStructure">
+        <xs:sequence>
+            <xs:element name="TaxType" type="SAFTCVTaxType"/>
+            <xs:element name="TaxCountryRegion" type="ISOCountryCode"/>
+            <xs:element name="TaxCode" type="SAFTCVTaxCode"/>
+            <xs:choice>
+                <xs:element name="TaxPercentage" type="SAFTdecimalType"/>
+                <xs:element name="TaxAmount" type="SAFmonetaryType"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Estrutura de Retencao na fonte-->
+    <xs:complexType name="WithholdingTaxStructure">
+        <xs:sequence>
+            <xs:element name="WithholdingTaxType" type="SAFTCVWithholdingTaxType" minOccurs="0"/>
+            <xs:element name="WithholdingTaxDescription" type="SAFmiddle2textType" minOccurs="0"/>
+            <xs:element name="WithholdingTaxAmount" type="SAFmonetaryType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- ****************************************** -->
+    <!-- ELEMENTOS DE TIPOS DE DADOS                -->
+    <!-- ****************************************** -->
+
+
+    <!-- ****************************************** -->
+    <!-- Tipos SAFT CV                              -->
+    <!-- ****************************************** -->
+
+
+    <!-- Codigo da Conta -->
+    <xs:simpleType name="SAFTCVAccountID">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="(([^^]*)|Desconhecido)"/>
+            <xs:minLength value="1"/>
+            <xs:maxLength value="30"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Codigo CAE -->
+    <xs:simpleType name="SAFTCVEACCode">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="(([0-9]*))"/>
+            <xs:maxLength value="10"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Meio de pagamento-->
+    <xs:simpleType name="SAFTCVPaymentMechanism">
+        <xs:annotation>
+            <xs:documentation xml:lang="pt">Opções:
+	CC para Cartao credito, 
+	CD para Cartao debito, 
+	CH para Cheque bancario, 
+	CI para credito documentario internacional, 
+	CO para Cheque ou cartao oferta, 
+	CS para Compensacao de saldos em conta corrente, 
+	DE para Dinheiro eletronico, por exemplo em cartoes de fidelidade ou de pontos, 	LC para Letra comercial, 
+	MB para Referencias de pagamento para Multibanco, 
+	NU para Numerario, 
+	OU para Outros meios aqui nao assinalados,
+	TB para Transferencia bancaria ou debito direto autorizado, 
+	TR para titulos de compensacao extrassalarial independentemente do seu suporte, por exemplo, titulos de refeicao, educacao, etc. </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CC"/>
+            <xs:enumeration value="CD"/>
+            <xs:enumeration value="CH"/>
+            <xs:enumeration value="CI"/>
+            <xs:enumeration value="CO"/>
+            <xs:enumeration value="CS"/>
+            <xs:enumeration value="DE"/>
+            <xs:enumeration value="LC"/>
+            <xs:enumeration value="MB"/>
+            <xs:enumeration value="NU"/>
+            <xs:enumeration value="OU"/>
+            <xs:enumeration value="TB"/>
+            <xs:enumeration value="TR"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Estado do documento Payments -->
+    <xs:simpleType name="SAFTCVPaymentStatus">
+        <xs:annotation>
+            <xs:documentation xml:lang="pt">Opções:
+	N para normal, 
+	A para Anulado </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="N"/>
+            <xs:enumeration value="A"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Periodo contabilistico do documento -->
+    <xs:simpleType name="SAFTCVPeriod">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="12"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- Tipos de produto -->
+    <xs:simpleType name="SAFTCVProductType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="P"/>
+            <xs:enumeration value="S"/>
+            <xs:enumeration value="O"/>
+            <xs:enumeration value="E"/>
+            <xs:enumeration value="I"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Tipos de produto physical stock -->
+    <xs:simpleType name="SAFTCVPSProductType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="M"/>
+            <xs:enumeration value="AB"/>
+            <xs:enumeration value="MP"/>
+            <xs:enumeration value="PCI"/>
+            <xs:enumeration value="SP"/>
+            <xs:enumeration value="PC"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Tipos de status de produto -->
+    <xs:simpleType name="SAFTCVProductStatus">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="A"/>
+            <xs:enumeration value="D"/>
+            <xs:enumeration value="DS"/>
+            <xs:enumeration value="O"/>
+            <xs:enumeration value="Q"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Codigo de de Imposto -->
+    <xs:simpleType name="SAFTCVTaxCode">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="10"/>
+            <xs:pattern value="NOR|RED|ISE|ESP|([a-zA-Z0-9.])*|NS|NA"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Categoria da conta -->
+    <xs:simpleType name="SAFTCVTaxonomyReference">
+        <xs:annotation>
+            <xs:documentation xml:lang="pt">Identificação do referencial de classificação de contas utilizado pela entidade (código de contas):
+                "S" - SNCRF base - Taxonomia S
+                "N" - Normas Internacionais de Contabilidade de Relato Financeiro (NIRF) - Taxonomia S
+                "P" – NRF-PE pequenas entidades - Taxonomia S
+                "O" - Outros referenciais contabilísticos, cuja taxonomia não se encontra codificada. As empresas do setor bancário e segurador, deverão assinalar este referencial no momento de preenchimento do ficheiro SAF-T (CV), na medida em que a presente portaria não prevê taxonomias específicas para estas entidades. Assim, no campo 2.1.2.9. Código de Classificação de Conta (TaxonomyCode), as respetivas contas devem ser associadas a uma taxonomia única «1». 
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="S"/>
+            <xs:enumeration value="N"/>
+            <xs:enumeration value="P"/>
+            <xs:enumeration value="O"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Tipo de Imposto -->
+    <xs:simpleType name="SAFTCVTaxType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="IVA"/>
+            <xs:enumeration value="IS"/>
+            <xs:enumeration value="NS"/>
+            <xs:enumeration value="TEU"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Tipos de Movimento Contabilistico -->
+    <xs:simpleType name="SAFTCVTransactionType">
+        <xs:annotation>
+            <xs:documentation xml:lang="pt"> Opções:
+	 N para Normal, 
+	 R para Regularizacoes do periodo de tributacao,
+	 A para Apuramento de resultados, 
+	 J para Movimentos de ajustamento
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="N"/>
+            <xs:enumeration value="R"/>
+            <xs:enumeration value="A"/>
+            <xs:enumeration value="J"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Codigo do tipo de imposto retido -->
+    <xs:simpleType name="SAFTCVWithholdingTaxType">
+        <xs:annotation>
+            <xs:documentation>Opções: 
+	IRPS – Imposto sobre o rendimento das pessoas singulares,
+	IRPC – Imposto sobre o rendimento das pessoas coletivas
+</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="IRPS"/>
+            <xs:enumeration value="IRPC"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Identificacao unica de documento -->
+    <xs:simpleType name="SAFTCVDocumentNumberType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[^/]+/[^/]+/[0-9]+"/>
+            <xs:minLength value="1"/>
+            <xs:maxLength value="60"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Estado do documento WorkingDocuments -->
+    <xs:simpleType name="SAFTCVWorkStatus">
+        <xs:annotation>
+            <xs:documentation xml:lang="pt">Opções:
+	N para Normal, 
+	A para Anulado, 
+	F para faturado</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="N"/>
+            <xs:enumeration value="A"/>
+            <xs:enumeration value="F"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Tipo de documento suscetivel de apresentacao ao cliente para conferencia de mercadorias ou de prestacao de servicos -->
+    <xs:simpleType name="SAFTCVWorkType">
+        <xs:annotation>
+            <xs:documentation xml:lang="pt">Opções: 
+    CC para créditos de consignação
+	CM para consulta de mesa,
+	FC para faturas à consignação
+	FO para folha de obra, 
+	NE para nota de encomenda 
+	OR para orcamento, 
+	PF para fatura pro-forma,
+	OU para outros documentos suscetiveis de apresentacao ao cliente para conferencia de mercadorias ou de prestacao de servicos que nao se encontrem aqui devidamente identificados (ou seus equivalentes).
+        </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CC"/>
+            <xs:enumeration value="CM"/>
+            <xs:enumeration value="FC"/>
+            <xs:enumeration value="FO"/>
+            <xs:enumeration value="NE"/>
+            <xs:enumeration value="OR"/>
+            <xs:enumeration value="PF"/>
+            <xs:enumeration value="OU"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <!--Codigo de classificacao da conta-->
+    <xs:simpleType name="SAFTCVTaxonomyCode">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="999"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- Codigo de de Imposto de pagamento-->
+    <xs:simpleType name="SAFTCVPaymentTaxCode">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="10"/>
+            <xs:pattern value="NOR|RED|ISE|OUT|([a-zA-Z0-9.])*|NA|NS"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- Codigo Postal a definir ! -->
+    <xs:simpleType name="SAFTCVPostalCode">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="([0-9]{4}-[0-9]{3})"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- Periodo do movimento contabilistico -->
+    <xs:simpleType name="SAFTCVAccountingPeriod">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="16"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="SAFTCVDocArchivalNumber">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[^ ]{1,20}"/>
+            <xs:minLength value="1"/>
+            <xs:maxLength value="20"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="SAFTCVGLAccountID">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="([^^]*)"/>
+            <xs:minLength value="2"/>
+            <xs:maxLength value="30"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="SAFTCVJournalID">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[^ ]{1,30}"/>
+            <xs:minLength value="1"/>
+            <xs:maxLength value="30"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="SAFTCVPaymentType">
+        <xs:annotation>
+            <xs:documentation> Opções:
+                                    RC - Recibo de Cliente
+                                    PF - Pagamento a Fornecedor
+                                    OU - Outros
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="RC"/>
+            <xs:enumeration value="PF"/>
+            <xs:enumeration value="OU"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- A definir -->
+    <xs:simpleType name="SAFTCVVatNumber">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="100000000"/>
+            <xs:maxInclusive value="999999999"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- Descrição do produto ou servico -->
+    <xs:simpleType name="SAFTCVProductDescription">
+        <xs:annotation/>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="2"/>
+            <xs:maxLength value="255"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="SAFTCVProductID">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[^/]+/[^/]+"/>
+            <xs:minLength value="3"/>
+            <xs:maxLength value="255"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- Origem do documento -->
+    <xs:simpleType name="SAFTCVSourceBilling">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="P"/>
+            <xs:enumeration value="I"/>
+            <xs:enumeration value="M"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- Origem do documento -->
+    <xs:simpleType name="SAFTCVSourcePayment">
+        <xs:annotation>
+            <xs:documentation>P para documento produzido na aplicacao, I para documento integrado e
+                produzido noutra aplicacao, M para documento proveniente de recuperacao ou de
+                emissao manual </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="P"/>
+            <xs:enumeration value="I"/>
+            <xs:enumeration value="M"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="SAFTCVTransactionID">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[1-9][0-9]{3}-[01][0-9]-[0-3][0-9] [^ ]{1,30} [^ ]{1,20}"/>
+            <xs:minLength value="1"/>
+            <xs:maxLength value="70"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- Numero ONU para substancias perigosas -->
+    <xs:simpleType name="SAFTCVUNNumber">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[0-9]{4}"/>
+            <xs:length value="4"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="SAFTCVconversionfactorType">
+        <xs:annotation>
+            <xs:documentation xml:lang="pt">Fator de conversão que poderá ter até 16 digitos e 8 casas decimais.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal">
+            <xs:totalDigits value="16"/>
+            <xs:fractionDigits value="8"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="SAFTCVEmailType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[^@]+@[^.]+\..+"/>
+            <xs:maxLength value="70"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <xs:simpleType name="SAFTCV3TextType">
+        <xs:annotation>
+            <xs:documentation>3 character text.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="3"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="SAFTCV20textType">
+        <xs:annotation>
+            <xs:documentation>20 character text.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="20"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <xs:simpleType name="SAFTCV50textType">
+        <xs:annotation>
+            <xs:documentation>50 character text.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="SAFT100CharTextType">
+        <xs:annotation>
+            <xs:documentation>100 character text.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="100"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="SAFTCV150textType">
+        <xs:annotation>
+            <xs:documentation>150 character text.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="150"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <!-- ****************************************** -->
+    <!-- Tipos SAFT OCDE 2.0                        -->
+    <!-- ****************************************** -->
+
+    <xs:simpleType name="SAFdateTimeType">
+        <xs:restriction base="xs:dateTime"/>
+    </xs:simpleType>
+    <xs:simpleType name="SAFdateType">
+        <xs:restriction base="xs:date"/>
+    </xs:simpleType>
+    <xs:simpleType name="SAFTdecimalType">
+        <xs:restriction base="xs:decimal">
+            <xs:minInclusive value="0.00"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="SAFmonetaryType">
+        <xs:restriction base="xs:decimal">
+            <xs:minInclusive value="0.00"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="SAFexchangerateType">
+        <xs:annotation>
+            <xs:documentation xml:lang="pt">Taxa de Câmbio que poderá ter até 18 digitos e conter até 8 casas decimais.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal">
+            <xs:totalDigits value="18"/>
+            <xs:fractionDigits value="8"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="SAFcodeType">
+        <xs:annotation>
+            <xs:documentation xml:lang="pt">Texto com 9 carateres.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="9"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="SAFquantityType">
+        <xs:annotation>
+            <xs:documentation>Used to describe a quantity. Monetary amount. 22 digits max, of which 6 can be fractional digits.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal">
+            <xs:totalDigits value="22"/>
+            <xs:fractionDigits value="6"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="SAFshorttextType">
+        <xs:annotation>
+            <xs:documentation>18 character text.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="18"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="SAFmiddle1textType">
+        <xs:annotation>
+            <xs:documentation>35 character text.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="35"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="SAFmiddle2textType">
+        <xs:annotation>
+            <xs:documentation>70 character text.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="70"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="SAFlongtextType">
+        <xs:annotation>
+            <xs:documentation>255 character text.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="255"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- ****************************************** -->
+    <!-- Códigos ISO                                -->
+    <!-- ****************************************** -->
+
+    <!-- Codigo da moeda (ISO 4217) -->
+    <xs:simpleType name="ISOCurrencyCode">
+        <xs:restriction base="xs:string">
+            <xs:pattern
+                value="EUR|AED|AFN|ALL|AMD|ANG|AOA|ARS|AUD|AWG|AZN|BAM|BBD|BDT|BGN|BHD|BIF|BMD|BND|BOB|BOV|BRL|BSD|BTN|BWP|BYN|BYR|BZD|CAD|CDF|CHE|CHF|CHW|CLF|CLP|CNY|COP|COU|CRC|CUC|CUP|CVE|CZK|DJF|DKK|DOP|DZD|EGP|ERN|ETB|FJD|FKP|GBP|GEL|GHS|GIP|GMD|GNF|GTQ|GYD|HKD|HNL|HRK|HTG|HUF|IDR|ILS|INR|IQD|IRR|ISK|JMD|JOD|JPY|KES|KGS|KHR|KMF|KPW|KRW|KWD|KYD|KZT|LAK|LBP|LKR|LRD|LSL|LTL|LVL|LYD|MAD|MDL|MGA|MKD|MMK|MNT|MOP|MRO|MRU|MUR|MVR|MWK|MXN|MXV|MYR|MZN|NAD|NGN|NIO|NOK|NPR|NZD|OMR|PAB|PEN|PGK|PHP|PKR|PLN|PYG|QAR|RON|RSD|RUB|RWF|SAR|SBD|SCR|SDG|SEK|SGD|SHP|SLL|SOS|SRD|SSP|STD|STN|SVC|SYP|SZL|THB|TJS|TMT|TND|TOP|TRY|TTD|TWD|TZS|UAH|UGX|USD|USN|USS|UYI|UYU|UZS|VEF|VND|VUV|WST|XAF|XAG|XAU|XBA|XBB|XBC|XBD|XCD|XDR|XFU|XOF|XPD|XPF|XPT|XSU|XUA|YER|ZAR|ZMW|ZWL|EEK|SKK|TMM|ZMK|ZWD|ZWR"/>
+            <xs:length value="3"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="ISOCountryCode">
+        <xs:restriction base="xs:string">
+            <xs:pattern
+                value="AD|AE|AF|AG|AI|AL|AM|AO|AQ|AR|AS|AT|AU|AW|AX|AZ|BA|BB|BD|BE|BF|BG|BH|BI|BJ|BL|BM|BN|BO|BQ|BR|BS|BT|BV|BW|BY|BZ|CA|CC|CD|CF|CG|CH|CI|CK|CL|CM|CN|CO|CR|CU|CV|CW|CX|CY|CZ|DE|DJ|DK|DM|DO|DZ|EC|EE|EG|EH|ER|ES|ET|FI|FJ|FK|FM|FO|FR|GA|GB|GD|GE|GF|GG|GH|GI|GL|GM|GN|GP|GQ|GR|GS|GT|GU|GW|GY|HK|HM|HN|HR|HT|HU|ID|IE|IL|IM|IN|IO|IQ|IR|IS|IT|JE|JM|JO|JP|KE|KG|KH|KI|KM|KN|KP|KR|KW|KY|KZ|LA|LB|LC|LI|LK|LR|LS|LT|LU|LV|LY|MA|MC|MD|ME|MF|MG|MH|MK|ML|MM|MN|MO|MP|MQ|MR|MS|MT|MU|MV|MW|MX|MY|MZ|NA|NC|NE|NF|NG|NI|NL|NO|NP|NR|NU|NZ|OM|PA|PE|PF|PG|PH|PK|PL|PM|PN|PR|PS|PT|PW|PY|QA|RE|RO|RS|RU|RW|SA|SB|SC|SD|SE|SG|SH|SI|SJ|SK|SL|SM|SN|SO|SR|SS|ST|SV|SX|SY|SZ|TC|TD|TF|TG|TH|TJ|TK|TL|TM|TN|TO|TR|TT|TV|TW|TZ|UA|UG|UM|US|UY|UZ|VA|VC|VE|VG|VI|VN|VU|WF|WS|XK|YE|YT|ZA|ZM|ZW|AND|ARE|AFG|ATG|AIA|ALB|ARM|AGO|ATA|ARG|ASM|AUT|AUS|ABW|ALA|AZE|BIH|BRB|BGD|BEL|BFA|BGR|BHR|BDI|BEN|BLM|BMU|BRN|BOL|BES|BRA|BHS|BTN|BVT|BWA|BLR|BLZ|CAN|CCK|COD|CAF|COG|CHE|CIV|COK|CHL|CMR|CHN|COL|CRI|CUB|CPV|CUW|CXR|CYP|CZE|DEU|DJI|DNK|DMA|DOM|DZA|ECU|EST|EGY|ESH|ERI|ESP|ETH|FIN|FJI|FLK|FSM|FRO|FRA|GAB|GBR|GRD|GEO|GUF|GGY|GHA|GIB|GRL|GMB|GIN|GLP|GNQ|GRC|SGS|GTM|GUM|GNB|GUY|HKG|HMD|HND|HRV|HTI|HUN|IDN|IRL|ISR|IMN|IND|IOT|IRQ|IRN|ISL|ITA|JEY|JAM|JOR|JPN|KEN|KGZ|KHM|KIR|COM|KNA|PRK|KOR|KWT|CYM|KAZ|LAO|LBN|LCA|LIE|LKA|LBR|LSO|LTU|LUX|LVA|LBY|MAR|MCO|MDA|MNE|MAF|MDG|MHL|MKD|MLI|MMR|MNG|MAC|MNP|MTQ|MRT|MSR|MLT|MUS|MDV|MWI|MEX|MYS|MOZ|NAM|NCL|NER|NFK|NGA|NIC|NLD|NOR|NPL|NRU|NIU|NZL|OMN|PAN|PER|PYF|PNG|PHL|PAK|POL|SPM|PCN|PRI|PSE|PRT|PLW|PRY|QAT|REU|ROU|SRB|RUS|RWA|SAU|SLB|SYC|SDN|SWE|SGP|SHN|SVN|SJM|SVK|SLE|SMR|SEN|SOM|SUR|SSD|STP|SLV|SXM|SYR|SWZ|TCA|TCD|ATF|TGO|THA|TJK|TKL|TLS|TKM|TUN|TON|TUR|TTO|TUV|TWN|TZA|UKR|UGA|UMI|USA|URY|UZB|VAT|VCT|VEN|VGB|VIR|VNM|VUT|WLF|WSM|YEM|MYT|ZAF|ZMB|ZWE|Desconhecido"/>
+            <xs:maxLength value="3"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
