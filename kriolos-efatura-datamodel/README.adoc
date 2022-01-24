@@ -1,0 +1,3 @@
+= Kriolos :: eFatura :: Datamodel
+
+Provide Java gen classes from schemas (XSD files)
