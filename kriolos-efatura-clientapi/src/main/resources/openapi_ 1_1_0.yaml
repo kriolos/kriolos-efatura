@@ -2740,3 +2740,39 @@ components:
           authorizationUrl: https://iam.efatura.cv/auth/realms/taxpayers/protocol/openid-connect/auth
           tokenUrl: https://iam.efatura.cv/auth/realms/taxpayers/protocol/openid-connect/token/introspect
           refreshUrl: https://iam.efatura.cv/auth/realms/taxpayers/protocol/openid-connect/token
+          scopes:
+            cv_ef_led_create: PLEASE_CHANGE_DESC
+            cv_ef_led_read: PLEASE_CHANGE_DESC
+            cv_ef_led_update: PLEASE_CHANGE_DESC
+            cv_ef_led_delete: PLEASE_CHANGE_DESC
+            cv_ef_event_read: PLEASE_CHANGE_DESC
+            cv_ef_dfe_create: PLEASE_CHANGE_DESC
+            cv_ef_dfe_read_list: PLEASE_CHANGE_DESC
+            cv_ef_dfe_read_iud: PLEASE_CHANGE_DESC
+            cv_ef_dfe_read_stats: PLEASE_CHANGE_DESC
+            cv_ef_tp_search: PLEASE_CHANGE_DESC
+            cv_ef_tp_ui_read: PLEASE_CHANGE_DESC
+            cv_ef_event_all: PLEASE_CHANGE_DESC
+            cv_ef_dfe_all: PLEASE_CHANGE_DESC
+            cv_ef_led_all: PLEASE_CHANGE_DESC
+            cv_ef_tp_all: PLEASE_CHANGE_DESC
+            cv_ef_event_create: PLEASE_CHANGE_DESC
+            cv_ef_cert_all: PLEASE_CHANGE_DESC
+            cv_ef_cert_read: PLEASE_CHANGE_DESC
+            cv_ef_sw_read_list: PLEASE_CHANGE_DESC
+            cv_ef_sw_gm_create: PLEASE_CHANGE_DESC
+            cv_ef_sw_gm_read: PLEASE_CHANGE_DESC
+            cv_ef_sw_gm_update: PLEASE_CHANGE_DESC
+            cv_ef_sw_gm_delete: PLEASE_CHANGE_DESC
+            cv_ef_sw_gm_all: PLEASE_CHANGE_DESC
+            cv_ef_sw_tmt_create: PLEASE_CHANGE_DESC
+            cv_ef_sw_tmt_read: PLEASE_CHANGE_DESC
+            cv_ef_sw_tmt_update: PLEASE_CHANGE_DESC
+            cv_ef_sw_tmt_delete: PLEASE_CHANGE_DESC
+            cv_ef_sw_tmt_all: PLEASE_CHANGE_DESC
+            cv_ef_sw_ctm_create: PLEASE_CHANGE_DESC
+            cv_ef_sw_ctm_read: PLEASE_CHANGE_DESC
+            cv_ef_sw_ctm_update: PLEASE_CHANGE_DESC
+            cv_ef_sw_ctm_delete: PLEASE_CHANGE_DESC
+            cv_ef_sw_ctm_all: PLEASE_CHANGE_DESC
+            cv_ef_sw_all: PLEASE_CHANGE_DESC
