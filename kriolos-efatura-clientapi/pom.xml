@@ -7,15 +7,21 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>kriolos-efatura-clientapi</artifactId>
-    <name>Kriolos :: eFatura :: Clientapi</name>
-    <packaging>jar</packaging>
+    <name>Kriolos :: eFatura :: Client</name>
+    <packaging>pom</packaging>
+    
+    <!--
+    <modules>
+        <module>${project.build.directory}/openapi</module>
+    </modules>
+    -->
     
     <build>
         <plugins>
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>5.3.0</version>
+                <version>5.3.1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -24,9 +30,20 @@
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/openapi_ 1_1_0.yaml</inputSpec>
                             <generatorName>java</generatorName>
-                            <configOptions>
-                                <sourceFolder>${project.basedir}/src/gen/java</sourceFolder>
-                            </configOptions>
+                            <packageName>io.github.kriolos.efatura.clientapi.generated</packageName>
+                            <apiPackage>io.github.kriolos.efatura.clientapi.generated.api</apiPackage>
+                            <modelPackage>io.github.kriolos.efatura.clientapi.generated.model</modelPackage>
+                            
+                            <groupId>io.github.kriolos.efatura</groupId>
+                            <artifactId>kriolos-efatura-clientapi-generated</artifactId>
+                            <artifactVersion>1.1.0</artifactVersion>
+                            
+                            <gitHost>https://github.com</gitHost>
+                            <gitUserId>kriolos</gitUserId>
+                            <gitRepoId>kriolos-efatura</gitRepoId>
+                            
+                            <!-- -->
+                            <output>${project.build.directory}/openapi</output>
                         </configuration>
                     </execution>
                 </executions>
