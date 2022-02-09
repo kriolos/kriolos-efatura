@@ -1,0 +1,8 @@
+= Kriolos :: eFatura :: Client (INCUBATION)
+
+
+== Reference
+
+* https://services.efatura.cv/api-list/#/
+* https://iam.efatura.cv/auth/realms/taxpayers/.well-known/openid-configuration
+* https://swagger.io/docs/specification/authentication/oauth2/
