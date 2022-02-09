@@ -1,0 +1,2742 @@
+---
+openapi: 3.0.3
+info:
+  title: e-Fatura API
+  contact:
+    name: e-Fatura
+    url: https://efatura.cv
+    email: helpdesk@efatura.cv
+  license:
+    name: Termos de Uso
+    url: https://efatura.cv
+  version: 1.1.0
+externalDocs:
+  description: Manual Técnico
+  url: https://efatura.cv/docs/manual
+tags:
+- name: CERTIFICATE
+  description: Recurso para interagir com Certificados Digitais.
+- name: DATA
+  description: Recurso para obter informações básicas da Plataforma Eletrónica.
+- name: DFE
+  description: Recurso para interagir com DFEs.
+- name: EVENT
+  description: Recurso para interagir com eventos.
+- name: LED
+  description: Recurso para interagir com LEDs.
+- name: SOFTWARE
+  description: Recurso para interagir com software.
+- name: TAXPAYER
+  description: Recurso para interagir com contribuintes.
+paths:
+  /v1/certificate/keystore:
+    get:
+      tags:
+      - CERTIFICATE
+      summary: Consulta de keystore.
+      operationId: CertificateResource_getKeystore
+      parameters:
+      - name: UseType
+        in: query
+        description: "Tipo de Uso de Certificado: SIGN=Assinatura Qualificada; TLS=Autenticaç\
+          ão TLS Mútua."
+        required: true
+        schema:
+          type: string
+      - name: cv-ef-repository-code
+        in: header
+        description: "Código de Repositório: 1-Principal; 2-Homologação; 3-Teste."
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseString'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseString'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_cert_read
+        - cv_ef_cert_all
+  /v1/data/pe-date-time:
+    get:
+      tags:
+      - DATA
+      summary: Devolve a data/hora atual da Plataforma Eletrónica.
+      operationId: DataResource_getPeDateTime
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseString'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseString'
+  /v1/dfe:
+    get:
+      tags:
+      - DFE
+      summary: Lista de DFEs limitada em 10000 DFEs.
+      operationId: DfeResource_getDfeSummaryListV1
+      parameters:
+      - name: AuthorizedDateEnd
+        in: query
+        schema:
+          type: string
+      - name: AuthorizedDateStart
+        in: query
+        schema:
+          type: string
+      - name: DocumentNumber
+        in: query
+        schema:
+          type: string
+      - name: DocumentTypeCodes
+        in: query
+        schema:
+          type: string
+      - name: EmitterTaxId
+        in: query
+        schema:
+          type: string
+      - name: IUD
+        in: query
+        schema:
+          type: string
+      - name: IsCanceled
+        in: query
+        schema:
+          type: string
+      - name: IssueDirection
+        in: query
+        schema:
+          type: string
+      - name: IssueYear
+        in: query
+        schema:
+          type: string
+      - name: LedCode
+        in: query
+        schema:
+          type: string
+      - name: ReceiverTaxId
+        in: query
+        schema:
+          type: string
+      - name: ReceiverTaxIdCountryCode
+        in: query
+        schema:
+          type: string
+      - name: cv-ef-repository-code
+        in: header
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/DfeListProcessingResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DfeListProcessingResponse'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_dfe_read_list
+        - cv_ef_dfe_all
+    post:
+      tags:
+      - DFE
+      summary: Comunicação de novos DFEs.
+      operationId: DfeResource_createDfe
+      parameters:
+      - name: cv-ef-repository-code
+        in: header
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  format: binary
+                  type: string
+            encoding:
+              file:
+                contentType: application/octet-stream
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/EfEntriesProcessingResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EfEntriesProcessingResponse'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_dfe_create
+        - cv_ef_dfe_all
+  /v1/dfe/pdf/{Id}:
+    get:
+      tags:
+      - DFE
+      summary: Consulta de PDF de um DFE com IUD.
+      operationId: DfeResource_getDfePdfById
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: cv-ef-repository-code
+        in: header
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseString'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseString'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_dfe_read_iud
+        - cv_ef_dfe_all
+  /v1/dfe/xml/{Id}:
+    get:
+      tags:
+      - DFE
+      summary: Consulta de XML com IUD exatamente como foi gerado e assinado pelo
+        contribuinte e com aposição de timestamp.
+      operationId: DfeResource_getDfeXmlById
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: cv-ef-repository-code
+        in: header
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseString'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseString'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_dfe_read_iud
+        - cv_ef_dfe_all
+  /v1/dfe/{Id}:
+    get:
+      tags:
+      - DFE
+      summary: Consulta de DFE com IUD.
+      operationId: DfeResource_getDfeById
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: cv-ef-repository-code
+        in: header
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseDfe'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseDfe'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_dfe_read_iud
+        - cv_ef_dfe_all
+  /v1/event:
+    get:
+      tags:
+      - EVENT
+      summary: Lista de eventos limitada em 10000 eventos.
+      operationId: EventResource_getEventList
+      parameters:
+      - name: cv-ef-repository-code
+        in: header
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/EventListProcessingResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventListProcessingResponse'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_event_read
+        - cv_ef_event_all
+    post:
+      tags:
+      - EVENT
+      summary: Comunicação de novos eventos.
+      operationId: EventResource_createEvent
+      parameters:
+      - name: cv-ef-repository-code
+        in: header
+        schema:
+          type: string
+      - name: cv-ef-software-code
+        in: header
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  format: binary
+                  type: string
+            encoding:
+              file:
+                contentType: application/octet-stream
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/EfEntriesProcessingResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EfEntriesProcessingResponse'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_event_create
+        - cv_ef_event_all
+  /v1/event/{Id}:
+    get:
+      tags:
+      - EVENT
+      summary: Consulta de evento com ID.
+      operationId: EventResource_getEventXmlById
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: cv-ef-repository-code
+        in: header
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseString'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseString'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_event_read
+        - cv_ef_event_all
+  /v1/led:
+    get:
+      tags:
+      - LED
+      summary: Lista de LEDs.
+      operationId: LedResource_readList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseListLedEntity'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_led_read
+        - cv_ef_led_all
+    post:
+      tags:
+      - LED
+      summary: Regista um novo LED.
+      operationId: LedResource_create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LedEntity'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseLedEntity'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_led_create
+        - cv_ef_led_all
+  /v1/led/{LedCode}:
+    get:
+      tags:
+      - LED
+      summary: Consulta de LED com código.
+      operationId: LedResource_readByCode
+      parameters:
+      - name: LedCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseLedEntity'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_led_read
+        - cv_ef_led_all
+    put:
+      tags:
+      - LED
+      summary: Atualiza um LED.
+      operationId: LedResource_update
+      parameters:
+      - name: LedCode
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LedEntity'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseLedEntity'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_led_update
+        - cv_ef_led_all
+    delete:
+      tags:
+      - LED
+      summary: Elimina um LED sem DFEs associados.
+      operationId: LedResource_delete
+      parameters:
+      - name: LedCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseBoolean'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_led_delete
+        - cv_ef_led_all
+  /v1/software:
+    get:
+      tags:
+      - SOFTWARE
+      summary: Lista de aplicações (software) de faturação/transmissão registadas
+        na Plataforma Eletrónica.
+      operationId: SoftwareResource_readSoftwarePublicList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseListSoftwareDto'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_read_list
+        - cv_ef_sw_all
+  /v1/software/customer:
+    get:
+      tags:
+      - SOFTWARE
+      summary: Lista contribuintes clientes de software.
+      operationId: SoftwareResource_readSoftwareCustomerList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseListSoftwareCustomerDto'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_ctm_read
+        - cv_ef_sw_ctm_all
+        - cv_ef_sw_all
+    post:
+      tags:
+      - SOFTWARE
+      summary: Regista um novo contribuinte cliente de software.
+      operationId: SoftwareResource_createSoftwareCustomer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoftwareCustomerEntity'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseSoftwareCustomerEntity'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_ctm_create
+        - cv_ef_sw_ctm_all
+        - cv_ef_sw_all
+  /v1/software/customer/{Id}:
+    get:
+      tags:
+      - SOFTWARE
+      summary: Consulta contribuinte cliente de software com ID.
+      operationId: SoftwareResource_readSoftwareCustomerById
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseSoftwareCustomerDto'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_ctm_read
+        - cv_ef_sw_ctm_all
+        - cv_ef_sw_all
+    put:
+      tags:
+      - SOFTWARE
+      summary: Atualiza um contribuinte cliente de software.
+      operationId: SoftwareResource_updateSoftwareCustomer
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoftwareCustomerEntity'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseSoftwareCustomerEntity'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_ctm_update
+        - cv_ef_sw_ctm_all
+        - cv_ef_sw_all
+    delete:
+      tags:
+      - SOFTWARE
+      summary: Elimina um contribuinte cliente de software.
+      operationId: SoftwareResource_deleteSoftwareCustomer
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseBoolean'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_ctm_delete
+        - cv_ef_sw_ctm_all
+        - cv_ef_sw_all
+  /v1/software/customer/{Id}/enabled:
+    put:
+      tags:
+      - SOFTWARE
+      summary: Ativa/Desativa um contribuinte cliente de software.
+      operationId: SoftwareResource_updateSoftwareCustomerEnabled
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoftwareCustomerEntity'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseSoftwareCustomerEntity'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_ctm_update
+        - cv_ef_sw_ctm_all
+        - cv_ef_sw_all
+  /v1/software/group-member:
+    get:
+      tags:
+      - SOFTWARE
+      summary: Lista de membros de grupo de software.
+      operationId: SoftwareResource_readSoftwareGroupMemberList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseListSoftwareGroupMemberDto'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_gm_read
+        - cv_ef_sw_gm_all
+        - cv_ef_sw_all
+    post:
+      tags:
+      - SOFTWARE
+      summary: Regista novo membro de grupo de software.
+      operationId: SoftwareResource_createSoftwareGroupMember
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoftwareGroupMemberEntity'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseSoftwareGroupMemberEntity'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_gm_create
+        - cv_ef_sw_gm_all
+        - cv_ef_sw_all
+  /v1/software/group-member/{Id}:
+    get:
+      tags:
+      - SOFTWARE
+      summary: Consulta de membro de grupo de software com ID.
+      operationId: SoftwareResource_readSoftwareGroupMemberById
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseSoftwareGroupMemberDto'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_gm_read
+        - cv_ef_sw_gm_all
+        - cv_ef_sw_all
+    put:
+      tags:
+      - SOFTWARE
+      summary: Atualiza um membro de grupo de software.
+      operationId: SoftwareResource_updateSoftwareGroupMember
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoftwareGroupMemberEntity'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseSoftwareGroupMemberEntity'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_gm_update
+        - cv_ef_sw_gm_all
+        - cv_ef_sw_all
+    delete:
+      tags:
+      - SOFTWARE
+      summary: Elimina um membro de grupo de software.
+      operationId: SoftwareResource_deleteSoftwareGroupMember
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseBoolean'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_gm_delete
+        - cv_ef_sw_gm_all
+        - cv_ef_sw_all
+  /v1/software/transmitter:
+    get:
+      tags:
+      - SOFTWARE
+      summary: Lista de transmissores associados a software.
+      operationId: SoftwareResource_readSoftwareTransmitterList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseListSoftwareTransmitterDto'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_tmt_read
+        - cv_ef_sw_tmt_all
+        - cv_ef_sw_all
+    post:
+      tags:
+      - SOFTWARE
+      summary: Regista novo transmissor.
+      operationId: SoftwareResource_createSoftwareTransmitter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoftwareTransmitterEntity'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseSoftwareTransmitterEntity'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_tmt_create
+        - cv_ef_sw_tmt_all
+        - cv_ef_sw_all
+  /v1/software/transmitter/{Id}:
+    get:
+      tags:
+      - SOFTWARE
+      summary: Consulta transmissor com ID.
+      operationId: SoftwareResource_readSoftwareTransmitterById
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseSoftwareTransmitterDto'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_tmt_read
+        - cv_ef_sw_tmt_all
+        - cv_ef_sw_all
+    put:
+      tags:
+      - SOFTWARE
+      summary: Atualiza um transmissor.
+      operationId: SoftwareResource_updateSoftwareTransmitter
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoftwareTransmitterEntity'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseSoftwareTransmitterEntity'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_tmt_update
+        - cv_ef_sw_tmt_all
+        - cv_ef_sw_all
+    delete:
+      tags:
+      - SOFTWARE
+      summary: Elimina um transmissor.
+      operationId: SoftwareResource_deleteSoftwareTransmitter
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseBoolean'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_tmt_delete
+        - cv_ef_sw_tmt_all
+        - cv_ef_sw_all
+  /v1/software/transmitter/{Id}/enabled:
+    put:
+      tags:
+      - SOFTWARE
+      summary: Ativa/Desativa um transmissor.
+      operationId: SoftwareResource_updateSoftwareTransmitterEnabled
+      parameters:
+      - name: Id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoftwareTransmitterEntity'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseSoftwareTransmitterEntity'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_sw_tmt_update
+        - cv_ef_sw_tmt_all
+        - cv_ef_sw_all
+  /v1/taxpayer/search:
+    get:
+      tags:
+      - TAXPAYER
+      summary: Pesquisa contribuintes por NIF e/ou Nome.
+      operationId: TaxPayerResource_search
+      parameters:
+      - name: Name
+        in: query
+        description: "Nome de contribuinte. Apenas letras, números e espaços."
+        schema:
+          type: string
+      - name: TaxId
+        in: query
+        description: NIF CV de contribuinte. 9 dígitos.
+        schema:
+          type: string
+      - name: Type
+        in: query
+        description: "Tipo de contribuinte: S=Singular; C=Coletivo; N=Entidade Nacional;\
+          \ E=Entidade Estrangeira; F=Fundo de Investimento; H=Herança; O=Outra Entidade."
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayloadProcessingResponseListTaxPayerCv'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_tp_search
+        - cv_ef_tp_all
+  /v2/dfe:
+    get:
+      tags:
+      - DFE
+      summary: Lista de DFEs que suporta paginação.
+      operationId: DfeResource_getDfeSummaryListV2
+      parameters:
+      - name: AuthorizedDateEnd
+        in: query
+        schema:
+          type: string
+      - name: AuthorizedDateStart
+        in: query
+        schema:
+          type: string
+      - name: DocumentNumber
+        in: query
+        schema:
+          type: string
+      - name: DocumentTypeCodes
+        in: query
+        schema:
+          type: string
+      - name: EmitterTaxId
+        in: query
+        schema:
+          type: string
+      - name: IUD
+        in: query
+        schema:
+          type: string
+      - name: IsCanceled
+        in: query
+        schema:
+          type: string
+      - name: IssueDirection
+        in: query
+        schema:
+          type: string
+      - name: IssueYear
+        in: query
+        schema:
+          type: string
+      - name: ItemsPerPage
+        in: query
+        schema:
+          type: string
+      - name: LedCode
+        in: query
+        schema:
+          type: string
+      - name: Page
+        in: query
+        schema:
+          type: string
+      - name: ReceiverTaxId
+        in: query
+        schema:
+          type: string
+      - name: ReceiverTaxIdCountryCode
+        in: query
+        schema:
+          type: string
+      - name: cv-ef-repository-code
+        in: header
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/DfeListPaginationResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DfeListPaginationResponse'
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - cv_ef_dfe_read_list
+        - cv_ef_dfe_all
+components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        AddressCode:
+          type: string
+        AddressDetail:
+          type: string
+        BuildingFloor:
+          type: string
+        BuildingName:
+          type: string
+        BuildingNumber:
+          type: string
+        City:
+          type: string
+        CountryCode:
+          type: string
+        PostalCode:
+          type: string
+        Region:
+          type: string
+        State:
+          type: string
+        Street:
+          type: string
+        StreetDetail:
+          type: string
+        formattedAddress:
+          type: string
+    Contacts:
+      type: object
+      properties:
+        Email:
+          type: string
+        Mobilephone:
+          type: string
+        Telefax:
+          type: string
+        Telephone:
+          type: string
+        Website:
+          type: string
+        formattedContacts:
+          type: string
+    Dfe:
+      type: object
+      properties:
+        Id:
+          type: string
+        Version:
+          type: string
+        Transmission:
+          $ref: '#/components/schemas/EfTransmission'
+        RepositoryCode:
+          format: int32
+          type: integer
+        DocumentTypeCode:
+          format: int32
+          type: integer
+        IsSpecimen:
+          type: boolean
+        LedCode:
+          format: int32
+          type: integer
+        LedDescription:
+          type: string
+        Serie:
+          type: string
+        DocumentNumber:
+          format: int32
+          type: integer
+        IssueDate:
+          type: string
+        IssueTime:
+          type: string
+        DueDate:
+          type: string
+        OrderReference:
+          $ref: '#/components/schemas/DfeOrderReference'
+        TaxPointDate:
+          type: string
+        IssueReasonCode:
+          type: string
+        IssueReasonDescription:
+          type: string
+        EmitterParty:
+          $ref: '#/components/schemas/EfParty'
+        ReceiverParty:
+          $ref: '#/components/schemas/EfParty'
+        TransportServiceProviderParty:
+          $ref: '#/components/schemas/EfParty'
+        TransportRoute:
+          type: array
+          items:
+            $ref: '#/components/schemas/DfeTransportLocation'
+        ReceiptTypeCode:
+          format: int32
+          type: integer
+        RentReceipt:
+          $ref: '#/components/schemas/DfeRentReceipt'
+        ReceiverTypeCode:
+          format: int32
+          type: integer
+        TransportDocumentTypeCode:
+          format: int32
+          type: integer
+        Lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/DfeLine'
+        Totals:
+          $ref: '#/components/schemas/DfeTotals'
+        Payments:
+          $ref: '#/components/schemas/DfePayments'
+        References:
+          type: array
+          items:
+            $ref: '#/components/schemas/DfeReference'
+        Note:
+          type: string
+        CanceledDateTime:
+          type: string
+        _calcPriceExtensionTotalAmount:
+          format: double
+          type: number
+        _calcChargeTotalAmount:
+          format: double
+          type: number
+        _calcDiscountTotalAmount:
+          format: double
+          type: number
+        _calcNetTotalAmount:
+          format: double
+          type: number
+        _calcTaxTotalAmount:
+          format: double
+          type: number
+        _calcTaxTotalAmountRoundedByLine:
+          format: double
+          type: number
+        _calcPayableAmount:
+          format: double
+          type: number
+        emitterTaxId:
+          format: int32
+          type: integer
+        idMaxLength:
+          format: int32
+          type: integer
+        idRegex:
+          type: string
+        idRegexMessage:
+          type: string
+        receipt:
+          type: boolean
+        creditOrDebitOrReturn:
+          type: boolean
+        returnNote:
+          type: boolean
+        transport:
+          type: boolean
+        issueDateTime:
+          $ref: '#/components/schemas/EfValidationContext'
+    DfeDiscount:
+      type: object
+      properties:
+        ValueType:
+          type: string
+        Value:
+          format: double
+          type: number
+    DfeFiscalDocument:
+      type: object
+      properties:
+        Value:
+          type: string
+        IsOldDocument:
+          type: boolean
+    DfeLine:
+      type: object
+      properties:
+        Id:
+          type: string
+        LineReferenceId:
+          type: string
+        LineTypeCode:
+          type: string
+        OrderLineReference:
+          type: string
+        Quantity:
+          $ref: '#/components/schemas/DfeLineQuantity'
+        Price:
+          format: double
+          type: number
+        PriceExtension:
+          format: double
+          type: number
+        Discount:
+          $ref: '#/components/schemas/DfeDiscount'
+        NetTotal:
+          format: double
+          type: number
+        Tax:
+          $ref: '#/components/schemas/DfeLineTax'
+        Item:
+          $ref: '#/components/schemas/DfeLineItem'
+    DfeLineItem:
+      type: object
+      properties:
+        Description:
+          type: string
+        Name:
+          type: string
+        BrandName:
+          type: string
+        ModelName:
+          type: string
+        EmitterIdentification:
+          type: string
+        StandardIdentification:
+          $ref: '#/components/schemas/DfeStandardIdentification'
+        HazardousRiskIndicator:
+          type: boolean
+        AdditionalProperties:
+          type: array
+          items:
+            $ref: '#/components/schemas/DfeProperty'
+    DfeLineQuantity:
+      type: object
+      properties:
+        UnitCode:
+          type: string
+        Value:
+          format: double
+          type: number
+    DfeLineTax:
+      type: object
+      properties:
+        TaxTypeCode:
+          type: string
+        StampTaxCode:
+          format: int32
+          type: integer
+        TaxPercentage:
+          format: double
+          type: number
+        TaxAmount:
+          format: double
+          type: number
+        TaxExemptionReasonCode:
+          format: int32
+          type: integer
+    DfeListPaginationResponse:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          allOf:
+          - $ref: '#/components/schemas/ItemsPaginationObject'
+          - xml:
+              name: Payload
+      xml:
+        name: Response
+    DfeListProcessingResponse:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/DfeSummary'
+          xml:
+            name: Payload
+            wrapped: true
+      xml:
+        name: Response
+    DfeOrderReference:
+      type: object
+      properties:
+        Id:
+          type: string
+    DfePayableAlternativeAmount:
+      type: object
+      properties:
+        CurrencyCode:
+          type: string
+        ExchangeRate:
+          format: double
+          type: number
+        Value:
+          format: double
+          type: number
+    DfePayeeFinancialAccount:
+      type: object
+      properties:
+        AccountNumber:
+          type: string
+        NIB:
+          type: string
+        Name:
+          type: string
+    DfePayment:
+      type: object
+      properties:
+        PaymentMeansCode:
+          format: int32
+          type: integer
+        PaymentReference:
+          type: string
+        PaymentDate:
+          type: string
+        PaymentAmount:
+          format: double
+          type: number
+        PayeeFinancialAccount:
+          $ref: '#/components/schemas/DfePayeeFinancialAccount'
+    DfePaymentTerms:
+      type: object
+      properties:
+        Note:
+          type: string
+    DfePayments:
+      type: object
+      properties:
+        PaymentDueDate:
+          type: string
+        PaymentTerms:
+          $ref: '#/components/schemas/DfePaymentTerms'
+        PayeeFinancialAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/DfePayeeFinancialAccount'
+        Payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/DfePayment'
+    DfeProperty:
+      type: object
+      properties:
+        Name:
+          type: string
+        Value:
+          type: string
+    DfeReference:
+      type: object
+      properties:
+        FiscalDocument:
+          $ref: '#/components/schemas/DfeFiscalDocument'
+        InnerDocumentNumber:
+          type: string
+        PaymentAmount:
+          format: double
+          type: number
+        Tax:
+          $ref: '#/components/schemas/DfeLineTax'
+    DfeRentReceipt:
+      type: object
+      properties:
+        AssetId:
+          type: string
+        RentPurposeTypeCode:
+          format: int32
+          type: integer
+        ContractTypeCode:
+          format: int32
+          type: integer
+        RentTypeCode:
+          format: int32
+          type: integer
+        ReferencePeriod:
+          type: string
+        Address:
+          $ref: '#/components/schemas/Address'
+    DfeStandardIdentification:
+      type: object
+      properties:
+        StandardName:
+          type: string
+        StandardValue:
+          type: string
+    DfeSummary:
+      type: object
+      properties:
+        Id:
+          type: string
+        EmitterTaxId:
+          format: int32
+          type: integer
+        ReceiverTaxId:
+          type: string
+        DocumentTypeCode:
+          format: int32
+          type: integer
+        LedCode:
+          format: int32
+          type: integer
+        AuthorizedDateTime:
+          format: date
+          type: string
+        CanceledDateTime:
+          format: date
+          type: string
+        IssueDirection:
+          type: string
+    DfeTotals:
+      type: object
+      properties:
+        PriceExtensionTotalAmount:
+          format: double
+          type: number
+        DiscountTotalAmount:
+          format: double
+          type: number
+        ChargeTotalAmount:
+          format: double
+          type: number
+        NetTotalAmount:
+          format: double
+          type: number
+        Discount:
+          $ref: '#/components/schemas/DfeDiscount'
+        TaxTotalAmount:
+          format: double
+          type: number
+        PayableRoundingAmount:
+          format: double
+          type: number
+        PayableAmount:
+          format: double
+          type: number
+        PayableAlternativeAmounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/DfePayableAlternativeAmount'
+    DfeTransportDuration:
+      type: object
+      properties:
+        StartDate:
+          type: string
+        StartTime:
+          type: string
+        EndDate:
+          type: string
+        EndTime:
+          type: string
+    DfeTransportLocation:
+      type: object
+      properties:
+        Address:
+          $ref: '#/components/schemas/Address'
+        Duration:
+          $ref: '#/components/schemas/DfeTransportDuration'
+        TransportModeCode:
+          format: int32
+          type: integer
+        VehicleRegistrationCode:
+          type: string
+    EfContingency:
+      type: object
+      properties:
+        LedCode:
+          format: int32
+          type: integer
+        IUC:
+          type: string
+        IssueDate:
+          type: string
+        IssueTime:
+          type: string
+        ReasonTypeCode:
+          format: int32
+          type: integer
+        ReasonDescription:
+          type: string
+    EfEntriesProcessingResponse:
+      type: object
+      properties:
+        _responses:
+          type: array
+          items:
+            $ref: '#/components/schemas/EfEntryProcessingResponse'
+        responses:
+          type: array
+          items:
+            $ref: '#/components/schemas/EfEntryProcessingResponse'
+          xml:
+            name: Response
+      xml:
+        name: Responses
+    EfEntryProcessingResponse:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        entryName:
+          type: string
+          xml:
+            name: EntryName
+        authorizedDateTime:
+          format: date
+          type: string
+          xml:
+            name: AuthorizedDateTime
+        signatureTimeStamp:
+          type: string
+          xml:
+            name: SignatureTimeStamp
+        pendingSignatureId:
+          type: string
+          xml:
+            name: PendingSignatureId
+      xml:
+        name: Response
+    EfParty:
+      type: object
+      properties:
+        TaxId:
+          $ref: '#/components/schemas/EfTaxId'
+        Name:
+          type: string
+        Address:
+          $ref: '#/components/schemas/Address'
+        Contacts:
+          $ref: '#/components/schemas/Contacts'
+        Reference:
+          type: string
+    EfSoftware:
+      type: object
+      properties:
+        Code:
+          type: string
+        Name:
+          type: string
+        Version:
+          type: string
+    EfTaxId:
+      type: object
+      properties:
+        CountryCode:
+          type: string
+        Value:
+          type: string
+    EfTransmission:
+      type: object
+      properties:
+        IssueMode:
+          format: int32
+          type: integer
+        TransmitterTaxId:
+          $ref: '#/components/schemas/EfTaxId'
+        Software:
+          $ref: '#/components/schemas/EfSoftware'
+        Contingency:
+          $ref: '#/components/schemas/EfContingency'
+    EfValidationContext:
+      type: object
+      properties:
+        _LogEnabled:
+          type: boolean
+        _contextDateTime:
+          format: date
+          type: string
+        _requiredFields:
+          type: array
+          items:
+            type: string
+        aheadDateMaxSeconds:
+          format: int64
+          type: integer
+        parentCode:
+          type: string
+        parentName:
+          type: string
+        contextDateTime:
+          format: date
+          type: string
+        contextTime:
+          format: int64
+          type: integer
+        logEnabled:
+          type: boolean
+        environment:
+          $ref: '#/components/schemas/Environment'
+        authenticatedUserTaxId:
+          format: int32
+          type: integer
+        repositoryCode:
+          format: int32
+          type: integer
+        xmlType:
+          $ref: '#/components/schemas/EfXmlType'
+        issueMode:
+          format: int32
+          type: integer
+        issueDateTime:
+          format: date
+          type: string
+        softwareCode:
+          type: string
+        efTransitionEndDate:
+          format: date
+          type: string
+        ledRepository:
+          $ref: '#/components/schemas/ILedRepository'
+        dfeRepository:
+          $ref: '#/components/schemas/IDfeRepository'
+        eventRepository:
+          $ref: '#/components/schemas/IEventRepository'
+        softwareRepository:
+          $ref: '#/components/schemas/ISoftwareRepository'
+        cvTaxPayerRepository:
+          $ref: '#/components/schemas/ICvTaxPayerRepository'
+        authenticatedUserKeyStore:
+          $ref: '#/components/schemas/KeyStore'
+        chainX509Certificates:
+          type: array
+          items:
+            $ref: '#/components/schemas/X509Certificate'
+        ignoreXmlSignatureRequirement:
+          type: boolean
+        prodEnvironment:
+          type: boolean
+        repositoryPrincipal:
+          type: boolean
+        effectiveEnvironment:
+          type: boolean
+        peFront:
+          type: boolean
+        transitionDateEnded:
+          type: boolean
+    EfXmlType:
+      enum:
+      - DFE
+      - EVENT
+      type: string
+    Environment:
+      enum:
+      - DEV
+      - LOCAL
+      - NONE
+      - PROD
+      - STG
+      - TST
+      type: string
+    EventListProcessingResponse:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventSummaryDto'
+          xml:
+            name: Payload
+            wrapped: true
+      xml:
+        name: Response
+    EventSummaryDto:
+      type: object
+      properties:
+        Id:
+          type: string
+        EventTypeCode:
+          type: string
+        EmitterTaxId:
+          format: int32
+          type: integer
+        IssueDateTime:
+          format: date
+          type: string
+        IssueReasonDescription:
+          type: string
+        AuthorizedDate:
+          format: date
+          type: string
+    ICvTaxPayerRepository:
+      type: object
+      properties:
+        repositoryName:
+          type: string
+    IDfeRepository:
+      type: object
+    IEventRepository:
+      type: object
+    ILedRepository:
+      type: object
+    ISoftwareRepository:
+      type: object
+    ItemsPaginationItemsPaginationObject:
+      type: object
+      properties:
+        allPagesItemCount:
+          format: int64
+          type: integer
+          xml:
+            name: AllPagesItemCount
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemsPaginationObject'
+          xml:
+            name: Items
+            wrapped: true
+        pageCount:
+          format: int32
+          type: integer
+          xml:
+            name: PageCount
+    ItemsPaginationObject:
+      type: object
+      properties:
+        allPagesItemCount:
+          format: int64
+          type: integer
+          xml:
+            name: AllPagesItemCount
+        items:
+          type: array
+          items:
+            type: object
+            xml:
+              name: Item
+          xml:
+            name: Items
+            wrapped: true
+        pageCount:
+          format: int32
+          type: integer
+          xml:
+            name: PageCount
+    KeyStore:
+      type: object
+      properties:
+        type:
+          type: string
+        provider:
+          $ref: '#/components/schemas/Provider'
+        keyStoreSpi:
+          $ref: '#/components/schemas/KeyStoreSpi'
+        initialized:
+          type: boolean
+        providerName:
+          type: string
+    KeyStoreSpi:
+      type: object
+    LedEntity:
+      type: object
+      properties:
+        id:
+          type: string
+        taxId:
+          format: int32
+          maximum: 999999999
+          minimum: 100000000
+          type: integer
+        code:
+          format: int32
+          maximum: 99999
+          minimum: 1
+          type: integer
+        description:
+          maxLength: 200
+          minLength: 5
+          type: string
+        serie:
+          maxLength: 20
+          minLength: 1
+          type: string
+        addressCode:
+          maxLength: 20
+          minLength: 20
+          type: string
+        addressDetail:
+          maxLength: 200
+          minLength: 10
+          type: string
+        softwareCode:
+          maxLength: 10
+          minLength: 3
+          type: string
+        created:
+          format: date
+          type: string
+    Message:
+      type: object
+      properties:
+        code:
+          type: string
+          xml:
+            name: Code
+        dateTime:
+          format: date
+          type: string
+          xml:
+            name: DateTime
+        description:
+          type: string
+          xml:
+            name: Description
+        index:
+          format: int32
+          type: integer
+          xml:
+            name: Index
+        location:
+          type: string
+          xml:
+            name: Location
+        source:
+          type: string
+          xml:
+            name: Source
+        type:
+          type: string
+          xml:
+            name: Type
+    PayloadProcessingResponseBoolean:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          type: boolean
+          xml:
+            name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseDfe:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          allOf:
+          - $ref: '#/components/schemas/Dfe'
+          - xml:
+              name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseLedEntity:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          allOf:
+          - $ref: '#/components/schemas/LedEntity'
+          - xml:
+              name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseListLedEntity:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/LedEntity'
+          xml:
+            name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseListSoftwareCustomerDto:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/SoftwareCustomerDto'
+          xml:
+            name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseListSoftwareDto:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/SoftwareDto'
+          xml:
+            name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseListSoftwareGroupMemberDto:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/SoftwareGroupMemberDto'
+          xml:
+            name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseListSoftwareTransmitterDto:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/SoftwareTransmitterDto'
+          xml:
+            name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseListTaxPayerCv:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxPayerCv'
+          xml:
+            name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseSoftwareCustomerDto:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          allOf:
+          - $ref: '#/components/schemas/SoftwareCustomerDto'
+          - xml:
+              name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseSoftwareCustomerEntity:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          allOf:
+          - $ref: '#/components/schemas/SoftwareCustomerEntity'
+          - xml:
+              name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseSoftwareGroupMemberDto:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          allOf:
+          - $ref: '#/components/schemas/SoftwareGroupMemberDto'
+          - xml:
+              name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseSoftwareGroupMemberEntity:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          allOf:
+          - $ref: '#/components/schemas/SoftwareGroupMemberEntity'
+          - xml:
+              name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseSoftwareTransmitterDto:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          allOf:
+          - $ref: '#/components/schemas/SoftwareTransmitterDto'
+          - xml:
+              name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseSoftwareTransmitterEntity:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          allOf:
+          - $ref: '#/components/schemas/SoftwareTransmitterEntity'
+          - xml:
+              name: Payload
+      xml:
+        name: Response
+    PayloadProcessingResponseString:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          xml:
+            name: Messages
+            wrapped: true
+        processedObject:
+          type: object
+          writeOnly: true
+        succeeded:
+          type: boolean
+          xml:
+            name: Succeeded
+            attribute: true
+        payload:
+          type: string
+          xml:
+            name: Payload
+      xml:
+        name: Response
+    Principal:
+      type: object
+      properties:
+        name:
+          type: string
+    PublicKey:
+      type: object
+      properties:
+        algorithm:
+          type: string
+        format:
+          type: string
+        encoded:
+          format: binary
+          type: string
+    SoftwareCustomerDto:
+      type: object
+      properties:
+        id:
+          type: string
+        softwareCode:
+          type: string
+        softwareName:
+          type: string
+        transmitterTaxId:
+          format: int32
+          type: integer
+        transmitterName:
+          type: string
+        oAuthClientId:
+          type: string
+        oAuthClientSecret:
+          type: string
+        oAuthRedirectUri:
+          type: string
+        isEnabled:
+          type: boolean
+        customerTaxId:
+          format: int32
+          type: integer
+        customerName:
+          type: string
+        useExclusiveOAuthParams:
+          type: boolean
+    SoftwareCustomerEntity:
+      type: object
+      properties:
+        id:
+          type: string
+        softwareCode:
+          maxLength: 10
+          minLength: 3
+          type: string
+        transmitterTaxId:
+          format: int32
+          maximum: 999999999
+          minimum: 100000000
+          type: integer
+        customerTaxId:
+          format: int32
+          maximum: 999999999
+          minimum: 100000000
+          type: integer
+        useExclusiveOAuthParams:
+          type: boolean
+        oAuthClientId:
+          type: string
+        oAuthClientSecret:
+          type: string
+        oAuthRedirectUri:
+          type: string
+        isEnabled:
+          type: boolean
+        created:
+          format: date
+          type: string
+        updated:
+          format: date
+          type: string
+    SoftwareDto:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        taxId:
+          format: int32
+          type: integer
+        created:
+          format: date
+          type: string
+        internal:
+          type: boolean
+        userJoinedPe:
+          type: boolean
+        integratedWithPe:
+          type: boolean
+        groupMembers:
+          type: array
+          items:
+            format: int32
+            type: integer
+        transmitLevelDate:
+          format: date
+          type: string
+        receiveLevelDate:
+          format: date
+          type: string
+    SoftwareGroupMemberDto:
+      type: object
+      properties:
+        id:
+          type: string
+        softwareCode:
+          type: string
+        softwareName:
+          type: string
+        groupMemberTaxId:
+          format: int32
+          type: integer
+        groupMemberName:
+          type: string
+    SoftwareGroupMemberEntity:
+      type: object
+      properties:
+        id:
+          type: string
+        softwareCode:
+          maxLength: 10
+          minLength: 3
+          type: string
+        groupMemberTaxId:
+          format: int32
+          maximum: 999999999
+          minimum: 100000000
+          type: integer
+        created:
+          format: date
+          type: string
+        updated:
+          format: date
+          type: string
+    SoftwareTransmitterDto:
+      type: object
+      properties:
+        id:
+          type: string
+        softwareCode:
+          type: string
+        softwareName:
+          type: string
+        transmitterTaxId:
+          format: int32
+          type: integer
+        transmitterName:
+          type: string
+        oAuthClientId:
+          type: string
+        oAuthClientSecret:
+          type: string
+        oAuthRedirectUri:
+          type: string
+        isEnabled:
+          type: boolean
+    SoftwareTransmitterEntity:
+      type: object
+      properties:
+        id:
+          type: string
+        softwareCode:
+          maxLength: 10
+          minLength: 3
+          type: string
+        transmitterTaxId:
+          format: int32
+          maximum: 999999999
+          minimum: 100000000
+          type: integer
+        oAuthClientId:
+          type: string
+        oAuthClientSecret:
+          type: string
+        oAuthRedirectUri:
+          type: string
+        isEnabled:
+          type: boolean
+        created:
+          format: date
+          type: string
+        updated:
+          format: date
+          type: string
+    TaxPayerCv:
+      type: object
+      properties:
+        Name:
+          type: string
+        TypeCode:
+          type: string
+        TypeDescription:
+          type: string
+        DateTime:
+          format: int64
+          type: integer
+        NormalizedName:
+          type: string
+        Email:
+          type: string
+        Mobile:
+          type: string
+        TaxId:
+          format: int32
+          type: integer
+    X509Certificate:
+      type: object
+      properties:
+        criticalExtensionOIDs:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        nonCriticalExtensionOIDs:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        type:
+          type: string
+        hash:
+          format: int32
+          type: integer
+        encoded:
+          format: binary
+          type: string
+        publicKey:
+          $ref: '#/components/schemas/PublicKey'
+        version:
+          format: int32
+          type: integer
+        serialNumber:
+          type: integer
+        issuerDN:
+          $ref: '#/components/schemas/Principal'
+        subjectDN:
+          $ref: '#/components/schemas/Principal'
+        notBefore:
+          format: date
+          type: string
+        notAfter:
+          format: date
+          type: string
+        tBSCertificate:
+          format: binary
+          type: string
+        signature:
+          format: binary
+          type: string
+        sigAlgName:
+          type: string
+        sigAlgOID:
+          type: string
+        sigAlgParams:
+          format: binary
+          type: string
+        issuerUniqueID:
+          type: array
+          items:
+            type: boolean
+        subjectUniqueID:
+          type: array
+          items:
+            type: boolean
+        keyUsage:
+          type: array
+          items:
+            type: boolean
+        extendedKeyUsage:
+          type: array
+          items:
+            type: string
+        basicConstraints:
+          format: int32
+          type: integer
+        subjectAlternativeNames:
+          type: array
+          items:
+            type: array
+            items:
+              type: object
+        issuerAlternativeNames:
+          type: array
+          items:
+            type: array
+            items:
+              type: object
+  securitySchemes:
+    SecurityScheme:
+      type: oauth2
+      description: Authentication
+      flows:
+        implicit:
+          authorizationUrl: https://iam.efatura.cv/auth/realms/taxpayers/protocol/openid-connect/auth
+          tokenUrl: https://iam.efatura.cv/auth/realms/taxpayers/protocol/openid-connect/token/introspect
+          refreshUrl: https://iam.efatura.cv/auth/realms/taxpayers/protocol/openid-connect/token

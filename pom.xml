@@ -58,5 +58,6 @@
     <modules>
         <module>kriolos-efatura-datamodel</module>
         <module>kriolos-efatura-core</module>
+        <module>kriolos-efatura-clientapi</module>
     </modules>    
 </project>
