@@ -15,6 +15,10 @@
             <id>efcv-jakarta-quarkus</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>framework</name>
+                    <value>quarkus</value>
+                </property>
             </activation> 
             <properties>
                 <cxf-xjc-plugin.version>4.0.1</cxf-xjc-plugin.version>
@@ -198,9 +202,7 @@
             <!-- Jarkarta for Java8 -->
             <id>efcv-jakarta</id>
             <activation>
-                <property>
-                    <name>efcv</name>
-                </property>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <!-- Apache CXF 4.x migrou completamente para o ecossistema Jakarta EE -->

@@ -49,6 +49,11 @@ cxf-xjc-plugin
 
 
 
+.Generate model classes from the official Cabo Verde XSD using xjc
+----
+xjc -d src/main/java schemas/e-fatura-cv.xsd
+----
+
 
 === Javax (JavaEE 8, Jakarta 8)
 
