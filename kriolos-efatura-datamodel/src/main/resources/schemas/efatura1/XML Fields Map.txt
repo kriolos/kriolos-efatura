@@ -32,6 +32,7 @@ TEL   Número inteiro com no máximo 20 dígitos.
 IUD   Alfanumérico com exatamente 45 carateres.
 SWVER Alfanumérico com mínimo de 1 e máximo de 50 carateres e sem espaços extras.
 REGX  Valor validado por Expressão Regular definida no XSD.
+UUID  Universal Unique Identifier
 ANY   Qualquer estrutura de texto limpo ou XML.
 
 ##########################################################################################
@@ -42,10 +43,11 @@ Dfe@Id                         {1}  IUD
 Dfe@DocumentTypeCode           {1}  ENUM
 
 IsIsolatedAct                  ?    BOOL
+SelfBilling                    ?          [SelfBilling]                     R(Apenas FTE, FRE, RCE, NCE, NDE, DVE)
 LedCode                        {1}  N5
 Serie                          {1}  REGX
 DocumentNumber                 {1}  N9
-InnerDocumentNumber            ?    N50
+InnerDocumentNumber            ?    CODE
 IssueDate                      {1}  D
 IssueTime                      {1}  T
 
@@ -55,6 +57,7 @@ TaxPointDate                   ?    D                                       R(Ap
 
 IssueReasonCode                {1}? ENUM                                    R(Apenas NCE, NDE, DVE)
 IssueReasonDescription         ?    A500                                    R(Apenas DVE. Min10. Max500)
+RappelPeriod                   ?    [DatePeriod]                            R(Apenas NCE)
 
 ReceiverTypeCode               ?    ENUM                                    R(Apenas DTE)
 TransportDocumentTypeCode      {1}? ENUM                                    R(Apenas DTE)
@@ -90,6 +93,10 @@ RepositoryCode                 {1}  ENUM
 Signature                      {1}        [Signature]
 
 ##### Referências #####
+
+SelfBilling
+    AuthorizationId            {1}  UUID
+    AuthorizationCode          {1}  A10
 
 OrderReference
     Id                         {1}  ID
@@ -194,6 +201,7 @@ Totals
     NetTotalAmount             {1}  D5GE0
     Discount                   ?    PERC
     TaxTotalAmount             {1}  D5GE0
+    WithholdingTaxTotalAmount  {1}? D5GE0
     PayableRoundingAmount      ?    D5
     PayableAmount              {1}  D5GE0
     PayableAlternativeAmount   *    D5GE0 [PayableAlternativeAmount]
@@ -256,7 +264,7 @@ References
 
 Reference
     FiscalDocument             ?          [FiscalDocument]
-    InnerDocumentNumber        ?    N50
+    InnerDocumentNumber        ?    CODE
     PaymentAmount              ?    D5G0
     Tax                        ?          [Tax]
 
@@ -286,3 +294,7 @@ Duration
     StartTime                  {1}  T
     EndDate                    ?    D
     EndTime                    ?    T
+
+DatePeriod
+    StartDate                  {1}  D
+    EndDate                    {1}  D

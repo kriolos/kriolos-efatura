@@ -48,6 +48,7 @@
 			<x:choice>
 				<x:element ref="ef:IUD" maxOccurs="unbounded" />
 				<x:sequence>
+					<x:element ref="ef:Year" minOccurs="0" />
 					<x:element ref="ef:LedCode" />
 					<x:element ref="ef:Serie"/>
 					<x:element name="DocumentTypeCode" type="ef:stDocumentTypeCode"/>

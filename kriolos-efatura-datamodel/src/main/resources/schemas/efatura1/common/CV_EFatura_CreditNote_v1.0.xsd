@@ -16,6 +16,8 @@
 				
 				<x:element name="IssueReasonCode" type="ef:stIssueReasonCode" />
 				
+				<x:element name="RappelPeriod" type="ef:ctDatePeriod" minOccurs="0" maxOccurs="1"/>
+				
 				<x:element ref="ef:EmitterParty" />
 				<x:element ref="ef:ReceiverParty" />
 				

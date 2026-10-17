@@ -5,6 +5,10 @@
 	xsi:schemaLocation="urn:cv:efatura:xsd:v1.0 EnvelopedSignature.xsd">
 
 	<Receipt>
+		<SelfBilling>
+			<AuthorizationId>cdb85a77-dda9-4bed-9b49-42ccbf516476</AuthorizationId>
+			<AuthorizationCode>123456</AuthorizationCode>
+		</SelfBilling>
 		<LedCode>1</LedCode>
 		<Serie>A2020</Serie>
 		<DocumentNumber>12345</DocumentNumber>

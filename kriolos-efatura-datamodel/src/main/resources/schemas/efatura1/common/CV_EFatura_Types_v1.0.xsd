@@ -106,7 +106,7 @@
 	<x:simpleType name="stSerie">
 		<x:restriction base="x:string">
 			<x:minLength value="1" />
-			<x:maxLength value="10" />
+			<x:maxLength value="20" />
 			<x:pattern value="[aA-zZ0-9]+([_-][aA-zZ0-9]+)*" />
 		</x:restriction>
 	</x:simpleType>
@@ -132,6 +132,7 @@
 
 	<x:simpleType name="stYear">
 		<x:restriction base="x:gYear">
+			<x:minExclusive value="2020" />
 			<x:maxInclusive value="2099" />
 		</x:restriction>
 	</x:simpleType>
@@ -197,7 +198,7 @@
 
 	<x:simpleType name="stTaxIdValue">
 		<x:restriction base="ef:stNoSpaces">
-			<x:minLength value="1" />
+			<x:minLength value="5" />
 			<x:maxLength value="20" />
 		</x:restriction>
 	</x:simpleType>
@@ -288,7 +289,7 @@
 	<x:simpleType name="stEventTypeCode">
 		<!--
 		FDC = Fiscal Document Cancelation - Cancelamento/Anulação de DFE
-		UDN = Unused Document Number      - Inutilização de Número de Documento 
+		UDN = Unused Document Number      - Inutilização de Número de Documento
 		-->
 		<x:restriction base="x:string">
 			<x:enumeration value="FDC" />
@@ -348,8 +349,10 @@
 			<x:enumeration value="NA" />
 			<x:enumeration value="IVA" />
 			<x:enumeration value="IS" />
-			<x:enumeration value="TEU" />
 			<x:enumeration value="IR" />
+			<!--
+			<x:enumeration value="TEU" />
+			-->
 		</x:restriction>
 	</x:simpleType>
 	
@@ -396,16 +399,17 @@
 	<x:simpleType name="stIssueReasonCode">
 		<x:restriction base="x:string">
 			<!--
-				0  = Outro                (NVE)
-				2  = Art.º 65, n.º 2 CIVA (NCE, NDE e DVE)
-				3  = Art.º 65, n.º 3 CIVA (NCE, NDE e DVE)
-				4  = Art.º 65, n.º 4 CIVA (NDE)
-				6  = Art.º 65, n.º 6 CIVA (NCE, NDE e DVE)
-				7  = Art.º 65, n.º 7 CIVA (NCE e NVE)
-				8  = Art.º 65, n.º 8 CIVA (NCE, NDE e DVE)
-				9  = Art.º 65, n.º 9 CIVA (NCE, NDE e DVE)
-				DD = Débito de Despesas   (NDE)
-				IN = Indisponível         (NCE, NDE e DVE) <Transição>
+				0   = Outro                (DVE)
+				2   = Art.º 65, n.º 2 CIVA (NCE, NDE e DVE)
+				3   = Art.º 65, n.º 3 CIVA (NCE, NDE e DVE)
+				4   = Art.º 65, n.º 4 CIVA (NDE)
+				6   = Art.º 65, n.º 6 CIVA (NCE, NDE e DVE)
+				7   = Art.º 65, n.º 7 CIVA (NCE e DVE)
+				8   = Art.º 65, n.º 8 CIVA (NCE, NDE e DVE)
+				9   = Art.º 65, n.º 9 CIVA (NCE, NDE e DVE)
+				DD  = Débito de Despesas   (NDE)
+				IN  = Indisponível         (NCE, NDE e DVE) <Transição>
+				DRP = Desconto por Rappel  (NCE)
 			-->
 			<x:enumeration value="0" />
 			<x:enumeration value="2" />
@@ -417,12 +421,13 @@
 			<x:enumeration value="9" />
 			<x:enumeration value="DD" />
 			<x:enumeration value="IN" />
+			<x:enumeration value="DRP" />
 		</x:restriction>
 	</x:simpleType>
 	
 	<x:simpleType name="stReferencePeriod">
 		<x:restriction base="x:string">
-			<x:pattern value="2\d{3}-(0[1-9]|1[12])" />
+			<x:pattern value="2\d{3}-(0[1-9]|1[012])" />
 		</x:restriction>
 	</x:simpleType>
 
@@ -463,6 +468,21 @@
 		<x:restriction base="ef:stNoExtraSpaces">
 			<x:minLength value="10" />
 			<x:maxLength value="500" />
+		</x:restriction>
+	</x:simpleType>
+	
+	<x:simpleType name="stSelfBillingAuthorizationCode">
+		<x:restriction base="ef:stDigits">
+			<x:minLength value="4" />
+			<x:maxLength value="10" />
+		</x:restriction>
+	</x:simpleType>
+	
+	<x:simpleType name="stUUID">
+		<x:restriction base="x:string">
+			<x:whiteSpace value="preserve" />
+			<x:length value="36" />
+			<x:pattern value="\w{8}-(\w{4}-){3}\w{12}" />
 		</x:restriction>
 	</x:simpleType>
 	
@@ -522,6 +542,13 @@
 				<x:element name="EndDate" type="ef:stDate" />
 				<x:element name="EndTime" type="x:time" />
 			</x:sequence>
+		</x:sequence>
+	</x:complexType>
+	
+	<x:complexType name="ctDatePeriod">
+		<x:sequence>
+			<x:element name="StartDate" type="ef:stDate" />
+			<x:element name="EndDate" type="ef:stDate" />
 		</x:sequence>
 	</x:complexType>
 	

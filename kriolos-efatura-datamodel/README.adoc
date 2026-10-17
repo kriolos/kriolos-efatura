@@ -2,21 +2,6 @@
 
 Provide Java gen classes from schemas (XSD files)
 
-== Know Issues
-
-
-* ISSUE-01 DUPLICATION of element 'ArchiveTimeStamp'
-
-.XAdES.xsd
-----
-<xsd:element name="ArchiveTimeStamp" type="XAdESTimeStampType"/>
-----
-
-.XAdESv141.xsd
-----
-<xsd:element name="ArchiveTimeStamp" type="xades:XAdESTimeStampType
-----
-
 == Schemas Version
 
 Base schemas DIR {.}/src/resources/schemas
@@ -46,15 +31,70 @@ Base schemas DIR {.}/src/resources/schemas
 |====
 
 
-== Code Gen
+== Code Generation from XSD
 
-..
+cxf-xjc-plugin
+
+* The plugin until version 3.x support generate code with "javax.". PROFILE
+* The plugin from version 4.x will generate code with new "jakarta.". DEFAULT MAVEN
+
+.Code generation with xjc maven plugin
+----
+<plugin>
+    <groupId>org.apache.cxf</groupId>
+    <artifactId>cxf-xjc-plugin</artifactId>
+    <version>${cxf-xjc-plugin.version}</version>
+</plugin>
+----
+
+
+
+
+=== Javax (JavaEE 8, Jakarta 8)
+
+Require
+
+javax.activation (the JavaBeans Activation Framework or JAF) 
+is required by XJC, the JAXB binding compiler. 
+Under the hood, XJC relies on classes like javax.activation.DataSource 
+and javax.activation.DataHandler to process binary data types 
+and MIME attachments when generating Java classes from an XML schema
+
+
+From Java 9 those package where "removed" from JDK, so is required to be declared in maven
+
+
+=== Jakarta 9 and new
+
+* jakarta.activation
+* 
+
+
+Also supported in Quarkus by quarkus-jaxb
 
 == SPECS Used
 
 * XAdES Digital Signatures XML schema files
 ** https://uri.etsi.org/01903/v1.3.2/
 ** http://uri.etsi.org/01903/v1.4.1
+
+
+
+== Know Issues
+
+
+* ISSUE-01 DUPLICATION of element 'ArchiveTimeStamp'
+
+.XAdES.xsd
+----
+<xsd:element name="ArchiveTimeStamp" type="XAdESTimeStampType"/>
+----
+
+.XAdESv141.xsd
+----
+<xsd:element name="ArchiveTimeStamp" type="xades:XAdESTimeStampType
+----
+
 
 == Reference
 

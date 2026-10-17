@@ -739,7 +739,7 @@ This document and the information contained herein is provided on an "AS IS" bas
           </xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="Id">
+      <xsd:enumeration value="ID">
         <xsd:annotation>
           <xsd:documentation xml:lang="en">
             <ccts:Name>INDONESIA</ccts:Name>

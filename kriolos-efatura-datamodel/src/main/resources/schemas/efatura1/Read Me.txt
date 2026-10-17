@@ -199,3 +199,37 @@
 
 2021-12-19
 1) Suporte a LineTypeCode="I". I=Informação. PriceExtension e NetTotal da linha não afetam os respetivos totais.
+
+2022-01-27
+1) Tamanho do campo série aumentado para 20 carateres.
+
+2022-01-28
+1) InnerDocumentNumber aceita até 50 carateres, exceto espaços.
+
+2022-01-29
+1) Elemento <Year> adicionado na estrutura do evento UDN.
+    Foi adicionado como opcional, mas vai ficar obrigatório a partir de 01-03-2022.
+    Para os XML submetidos sem este campo, será assumido o ano da IssueDateTime do evento.
+
+2022-02-19
+1) Elemento <WithholdingTaxTotalAmount> adicionado na estrutura de Totals.
+    O seu valor corresponde à soma dos impostos IR e é subtraido em PayableAmount.
+2) Elemento <Tax> passou a ter maxOccurs="2" em vez de maxOccurs="unbounded".
+3) TaxTypeCode="TEU" deixou de ser uma opção na lista de Tipos de Imposto.
+
+2022-02-23
+1) Elemento <TaxTotal> adicionado como opcional na estrutura de Tax.
+    Caso não for indicado, o sistema calcula/valida o imposto de acordo com os 2 modos anteriores.
+    Caso for indicado, o sistema assume o valor como o imposto da linha. Entretanto, esse valor é validado
+    se está entre floor(X) e ceil(X), onde X = NetTotal * TaxPercentage / 100.
+
+2022-03-10
+1) Correção do código de país da INDONESIA que estava Id em vez de ID.
+2) Correção da regex do elemento Dfe/Receipt/RentReceipt/ReferencePeriod que excluia o mês 10.
+
+2023-12-15
+1) Elemento <SelfBilling> de autofaturação adicionado na estrutura dos DFEs.
+
+2024-05-27
+1) Opção IssueReasonCode=DRP adicionada para suportar "Desconto por Rappel" como motivo de emissão da NCE.
+2) Elemento <RappelPeriod> adicionado na estrutura da NCE para indicar o período do Desconto por Rappel.

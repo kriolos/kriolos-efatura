@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<codelists>
+  <isencoes>
+    <item code="M01" desc="Isento ao abrigo do artigo 9.º do CIVA"/>
+    <item code="M02" desc="Operações de exportação"/>
+    <item code="M03" desc="Regime especial de isenção"/>
+  </isencoes>
+  <locais>
+    <concelho code="PR" name="Praia"/>
+    <concelho code="SV" name="São Vicente"/>
+    <concelho code="ST" name="Santa Catarina"/>
+  </locais>
+</codelists>

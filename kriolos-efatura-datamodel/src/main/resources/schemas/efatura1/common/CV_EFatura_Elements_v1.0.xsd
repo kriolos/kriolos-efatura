@@ -33,6 +33,8 @@
 	<x:element name="RepositoryCode" type="ef:stRepositoryCode"/>
 
 	<x:element name="IssueMode" type="ef:stIssueMode"/>
+	
+	<x:element name="Year" type="ef:stYear"/>
 
 	<x:element name="LedCode" type="ef:stLedCode"/>
 
@@ -60,7 +62,7 @@
 							<x:element ref="ef:FiscalDocument" minOccurs="0"/>
 							<x:element ref="ef:InnerDocumentNumber" minOccurs="0" />
 							<x:element name="PaymentAmount" type="ef:stDecimal5MinExc0" minOccurs="0"/>
-							<x:element ref="ef:Tax" minOccurs="0" maxOccurs="unbounded"/>
+							<x:element ref="ef:Tax" minOccurs="0" maxOccurs="2"/>
 						</x:sequence>
 					</x:complexType>
 				</x:element>
@@ -70,7 +72,7 @@
 
 	<x:element name="DocumentNumber" type="ef:stDocumentNumber"/>
 	
-	<x:element name="InnerDocumentNumber" type="ef:stDigits"/>
+	<x:element name="InnerDocumentNumber" type="ef:stCode"/>
 	
 	<x:element name="TaxPointDate" type="ef:stDate"/>
 
@@ -336,7 +338,9 @@
 	<x:element name="ChargeTotalAmount" type="ef:stDecimal5MinInc0"/>
 
 	<x:element name="TaxTotalAmount" type="ef:stDecimal5MinInc0"/>
-
+	
+	<x:element name="WithholdingTaxTotalAmount" type="ef:stDecimal5MinInc0"/>
+	
 	<x:element name="PayableRoundingAmount" type="ef:stDecimal5"/>
 
 	<x:element name="PayableAmount" type="ef:stDecimal5MinInc0"/>
@@ -354,6 +358,7 @@
 	</x:element>
 
 	<!-- <x:element name="TaxTypeCode" type="ef:stTaxTypeCode"/> -->
+	
 	<x:element name="TaxPercentage">
 		<x:simpleType>
 			<x:restriction base="ef:stPercentage">
@@ -364,7 +369,8 @@
 	<x:element name="TaxAmount" type="ef:stDecimal5MinExc0"/>
 	<x:element name="TaxExemptionReasonCode" type="ef:stTaxExemptionReason"/>
 	<x:element name="StampTaxCode" type="ef:stStampTaxCode"/>
-
+	<x:element name="TaxTotal" type="ef:stDecimal5MinExc0"/>
+	
 	<x:element name="Tax">
 		<x:complexType>
 			<x:sequence>
@@ -374,6 +380,7 @@
 					<x:element ref="ef:TaxAmount"/>
 					<x:element ref="ef:TaxExemptionReasonCode"/>
 				</x:choice>
+				<x:element ref="ef:TaxTotal" minOccurs="0"/>
 			</x:sequence>
 			<x:attribute name="TaxTypeCode" type="ef:stTaxTypeCode" use="required"/>
 		</x:complexType>
@@ -426,7 +433,7 @@
 							<x:element ref="ef:PriceExtension" minOccurs="0"/>
 							<x:element ref="ef:Discount" minOccurs="0"/>
 							<x:element ref="ef:NetTotal" minOccurs="0"/>
-							<x:element ref="ef:Tax" minOccurs="0" maxOccurs="unbounded"/>
+							<x:element ref="ef:Tax" minOccurs="0" maxOccurs="2"/>
 							<x:element ref="ef:Item"/>
 						</x:sequence>
 						<x:attribute name="LineTypeCode" type="ef:stLineTypeCode" use="optional" default="N"/>
@@ -445,6 +452,7 @@
 				<x:element ref="ef:NetTotalAmount" minOccurs="1" maxOccurs="1"/>
 				<x:element ref="ef:Discount" minOccurs="0" maxOccurs="1"/>
 				<x:element ref="ef:TaxTotalAmount" minOccurs="1" maxOccurs="1"/>
+				<x:element ref="ef:WithholdingTaxTotalAmount" minOccurs="0" maxOccurs="1"/>
 				<x:element ref="ef:PayableRoundingAmount" minOccurs="0" maxOccurs="1"/>
 				<x:element ref="ef:PayableAmount" minOccurs="1" maxOccurs="1"/>
 				<x:element ref="ef:PayableAlternativeAmount" minOccurs="0" maxOccurs="unbounded"/>
@@ -633,9 +641,19 @@
 		</x:complexType>
 	</x:element>
 
+	<x:element name="SelfBilling">
+		<x:complexType>
+			<x:sequence>
+				<x:element name="AuthorizationId" type="ef:stUUID"/>
+				<x:element name="AuthorizationCode" type="ef:stSelfBillingAuthorizationCode"/>
+			</x:sequence>
+		</x:complexType>
+	</x:element>
+
 	<x:group name="grDfeHeaderCommon">
-		<x:sequence>			
-			<x:element name="IsIsolatedAct" type="ef:stBoolean" minOccurs="0"/>
+		<x:sequence>
+			<x:element name="IsIsolatedAct" type="ef:stBoolean" minOccurs="0"/>			
+			<x:element ref="ef:SelfBilling" minOccurs="0"/>
 			<x:element ref="ef:LedCode"/>
 			<x:element ref="ef:Serie"/>
 			<x:element ref="ef:DocumentNumber"/>

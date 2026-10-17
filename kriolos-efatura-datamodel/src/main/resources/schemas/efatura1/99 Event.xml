@@ -2,8 +2,8 @@
 <!--
 	Id = CVRepositórioAnoMêsDiaHoraMinutoSegundoNif
 	EventTypeCode:
-		FDC = Fiscal Document Cancellation - Cancelamento/Anulação de DFE
-		UDN = Unused Document Number       - Inutilização de Número de Documento
+		FDC = Fiscal Document Cancellation - Cancelamento/Anulação de DFE;
+		UDN = Unused Document Number       - Inutilização de Número de Documento;
 -->
 <Event Id="CV1210805181011123456789" Version="1.0" EventTypeCode="FDC" xmlns="urn:cv:efatura:xsd:v1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -11,15 +11,15 @@
 	<EmitterTaxId CountryCode="CV">123456789</EmitterTaxId>
 	<IssueDateTime>2021-01-01T01:02:03</IssueDateTime>
 	<IssueReasonDescription>Descrição do motivo de emissão do evento</IssueReasonDescription>
-	<!-- Apenas para o evento FDC -->
-	<IUD>CV1200520123456789000112345678901112345678904</IUD>
-	<!-- Para o evento UDN deve indicar:
-		<LedCode>1</LedCode>
-		<Serie>ABC</Serie>
-		<DocumentTypeCode>1</DocumentTypeCode>
-		<DocumentNumberStart>1</DocumentNumberStart>
-		<DocumentNumberEnd>10</DocumentNumberEnd>
-	-->
+	<!-- Para o evento FDC deve indicar apenas o IUD -->
+	<!-- <IUD>CV1200520123456789000112345678901112345678904</IUD> -->
+	<!-- Para o evento UDN deve indicar -->
+	<Year>2021</Year>
+	<LedCode>1</LedCode>
+	<Serie>ABC</Serie>
+	<DocumentTypeCode>1</DocumentTypeCode>
+	<DocumentNumberStart>1</DocumentNumberStart>
+	<DocumentNumberEnd>10</DocumentNumberEnd>
 	<Transmission>
 		<IssueMode>1</IssueMode>
 		<TransmitterTaxId CountryCode="CV">123456789</TransmitterTaxId>
@@ -89,4 +89,3 @@
 		</ds:Object>
 	</ds:Signature>
 </Event>
-

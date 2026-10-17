@@ -14,6 +14,14 @@
 	<IsSpecimen>true</IsSpecimen>
 	
 	<Invoice>
+		<!-- Indicação de Autofaturação -->
+		<SelfBilling>
+			<!-- ID do pedido de autorização retornado pela PE no endpoint "/v1/dfe/self-billing/authorize" -->
+			<AuthorizationId>cdb85a77-dda9-4bed-9b49-42ccbf516476</AuthorizationId>
+			<!-- Código de autorização enviado para o email/telemóvel do contribuinte emissor -->
+			<AuthorizationCode>123456</AuthorizationCode>
+		</SelfBilling>
+		
 		<!-- Identificação do DFE -->
 		<LedCode>1</LedCode>
 		<Serie>XYZ</Serie>
@@ -73,7 +81,7 @@
 		
 		<!-- Recetor/Destinatário (AccountingCustomerParty) -->
 		<ReceiverParty>
-			<TaxId CountryCode="CV">123456789</TaxId>
+			<TaxId CountryCode="BR">1-2345-6789</TaxId>
 			<Name>Nome do Recestor</Name>
 			<Address CountryCode="CV">
 				<AddressDetail>Detalhe de endereço do contribuinte recetor</AddressDetail>
@@ -100,8 +108,12 @@
 				<PriceExtension>30000</PriceExtension>
 				<Discount ValueType="A">100</Discount>
 				<NetTotal>30000</NetTotal>
-				<Tax TaxTypeCode="NA">
-					<TaxExemptionReasonCode>1</TaxExemptionReasonCode>
+				<Tax TaxTypeCode="IVA">
+					<TaxPercentage>15</TaxPercentage>
+					<TaxTotal>4500</TaxTotal>
+				</Tax>
+				<Tax TaxTypeCode="IR">
+					<TaxPercentage>10</TaxPercentage>
 				</Tax>
 				<!-- TaxPointDate -->
 				<Item>
@@ -124,7 +136,7 @@
 				<NetTotal>150</NetTotal>
 				<Tax TaxTypeCode="IS">
 					<StampTaxCode>2</StampTaxCode>
-					<TaxPercentage>3.5</TaxPercentage>
+					<TaxPercentage>3.5</TaxPercentage>					
 				</Tax>
 				<Item>
 					<Description>Juros Mensal</Description>
@@ -152,6 +164,7 @@
 			<NetTotalAmount>3000</NetTotalAmount>
 			<Discount>10</Discount>
 			<TaxTotalAmount>450</TaxTotalAmount>
+			<WithholdingTaxTotalAmount>10</WithholdingTaxTotalAmount>
 			<PayableRoundingAmount>-10</PayableRoundingAmount>
 			<!-- GrossTotal no SAFT -->
 			<PayableAmount>5000</PayableAmount>

@@ -11,8 +11,12 @@
 		<IssueDate>2021-01-01</IssueDate>
 		<IssueTime>11:01:02</IssueTime>
 		
-		<IssueReasonCode>2</IssueReasonCode>
-
+		<IssueReasonCode>DRP</IssueReasonCode>
+		<RappelPeriod>
+			<StartDate>2023-01-01</StartDate>
+			<EndDate>2023-12-31</EndDate>
+		</RappelPeriod>
+		
 		<EmitterParty>
 			<TaxId CountryCode="CV">123456789</TaxId>
 			<Name>Nome do Emissor</Name>
