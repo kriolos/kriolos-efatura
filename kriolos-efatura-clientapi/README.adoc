@@ -1,6 +1,17 @@
 = Kriolos :: eFatura :: Client (INCUBATION)
 
 
+== Obters os scopes em falta
+
+
+* https://iam.efatura.cv/auth/realms/taxpayers/.well-known/openid-configuration
+
+.Em Alternative
+----
+yq '.paths[][].security[][] | select(. != null) | [.]' openapi.yaml
+----
+
+
 == Reference
 
 * https://services.efatura.cv/api-list/#/

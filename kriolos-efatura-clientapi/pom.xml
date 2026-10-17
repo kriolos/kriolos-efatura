@@ -8,46 +8,115 @@
     </parent>
     <artifactId>kriolos-efatura-clientapi</artifactId>
     <name>Kriolos :: eFatura :: Client</name>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     
-    <!--
-    <modules>
-        <module>${project.build.directory}/openapi</module>
-    </modules>
-    -->
+    <dependencies>
+        <!-- REST Client & Jakarta RESTful Web Services -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-client-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Jakarta Enterprise Beans & Annotations -->
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
+
+        <!-- Validação de Dados (Bean Validation) -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-validator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
+        <!-- Serialização JSON (Jackson) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+    </dependencies>
+
     
     <build>
         <plugins>
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>5.3.1</version>
+                <version>7.25.0</version>
                 <executions>
                     <execution>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/openapi_ 1_1_0.yaml</inputSpec>
-                            <generatorName>java</generatorName>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi-2.0.0.yaml</inputSpec>
+                            <generatorName>jaxrs-spec</generatorName>
                             <packageName>io.github.kriolos.efatura.clientapi.generated</packageName>
                             <apiPackage>io.github.kriolos.efatura.clientapi.generated.api</apiPackage>
                             <modelPackage>io.github.kriolos.efatura.clientapi.generated.model</modelPackage>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <generateModelDocumentation>false</generateModelDocumentation>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+         
                             
-                            <groupId>io.github.kriolos.efatura</groupId>
-                            <artifactId>kriolos-efatura-clientapi-generated</artifactId>
-                            <artifactVersion>1.1.0</artifactVersion>
+                            <output>${project.build.directory}/generated-sources</output>
                             
-                            <gitHost>https://github.com</gitHost>
-                            <gitUserId>kriolos</gitUserId>
-                            <gitRepoId>kriolos-efatura</gitRepoId>
-                            
-                            <!-- -->
-                            <output>${project.build.directory}/openapi</output>
+                            <configOptions>
+                                <useTags>true</useTags>
+                                
+                                <dateLibrary>java8</dateLibrary>
+                                <interfaceOnly>true</interfaceOnly>
+                                
+                                <!-- Altere de 'quarkus' para 'microprofile' para obter suporte completo a extensões reutilizáveis -->
+                                <library>quarkus</library> 
+    
+                                <!-- Ativa explicitamente a geração das anotações @RegisterRestClient -->
+                                <additionalModelTypeAnnotations>@org.eclipse.microprofile.rest.client.inject.RegisterRestClient(configKey="cvefatura-client")</additionalModelTypeAnnotations>
+        
+                                <openApiNullable>false</openApiNullable>
+                                <returnResponse>true</returnResponse>
+                                <sourceFolder>cvefatura</sourceFolder>
+                                <sortParamsByRequiredFlag>false</sortParamsByRequiredFlag>
+                                <useJakartaEe>true</useJakartaEe>
+                                <useSwaggerAnnotations>false</useSwaggerAnnotations>
+                            </configOptions>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>io.smallrye</groupId>
+                <artifactId>jandex-maven-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>make-index</id>
+                        <goals>
+                            <goal>jandex</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+
 </project>
